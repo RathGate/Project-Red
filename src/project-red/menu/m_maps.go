@@ -6,7 +6,7 @@ import (
 	"github.com/oleiade/reflections"
 )
 
-var Directions = []string{"Up", "Right", "Down", "Left"}
+var Directions = []string{"Left", "Down", "Up", "Right"}
 
 type Mapblock struct {
 	Id                            int
@@ -59,6 +59,7 @@ func DeclareMaps() []*Mapblock {
 		Down:   map_1,
 		Origin: map_1,
 	}
+	map_1.Up = map_3
 	var map_4 = &Mapblock{
 		Id:     4,
 		Left:   map_1,
@@ -128,14 +129,9 @@ func ChooseDirection(originMap *Mapblock) string {
 	return answer
 }
 
-func ChangeMap(originMap *Mapblock) {
+func ChangeMap(currentMap, previousMap **Mapblock, random *Mapblock) {
 
-	dir := ChooseDirection(originMap)
-	val, _ := reflections.GetField(originMap, dir)
-	*originMap = *val.(*Mapblock)
-	if !originMap.Discovered {
-		originMap.Discovered = true
-	}
-	fmt.Println()
-	originMap.PrintMap()
+	dir := ChooseDirection(*currentMap)
+	_ = dir
+	currentMap = &random
 }
