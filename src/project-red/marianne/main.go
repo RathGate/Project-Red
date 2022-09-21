@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"project-red/menu"
+	"projectRed/menu"
 )
 
 var currentMap *menu.Mapblock
@@ -10,9 +10,11 @@ var currentMap *menu.Mapblock
 func main() {
 	maps := menu.DeclareMaps()
 
-	currentMap = maps[0]
+	currentMap = menu.Mapblock{
+		id: 15,
+	}
 	previousMap := currentMap
-	previousMap.Id += 100
+	previousMap.Id += 1
 	fmt.Println(currentMap.Id, previousMap.Id)
 	// menu.ChangeMap(currentMap, previousMap, maps[3])
 	// fmt.Println(currentMap, maps)
