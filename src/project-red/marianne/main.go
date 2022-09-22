@@ -5,31 +5,38 @@ import (
 	"projectRed/menu"
 )
 
-var currentMap *menu.Mapblock
+var Player menu.Character = menu.P1
+var ShopKeeper menu.ShopKeeper
+var GameEnded bool = false
 
 func main() {
-	maps := menu.DeclareMaps()
-
-	currentMap = menu.Mapblock{
-		id: 15,
+	ShopKeeper.Name = "ShopKeeper"
+	ShopKeeper.Inventory.Money = 100
+	potions2 := menu.Item{
+		Name:   "Potion",
+		Type:   "heal",
+		Effect: map[string]interface{}{"type": "attack", "time": 0, "damage": 3, "element": "fire"},
+		Price:  10,
 	}
-	previousMap := currentMap
-	previousMap.Id += 1
-	fmt.Println(currentMap.Id, previousMap.Id)
-	// menu.ChangeMap(currentMap, previousMap, maps[3])
-	// fmt.Println(currentMap, maps)
-
-	type Person struct {
-		Name string
-		Age  int
+	moncul := map[string]interface{}{
+		"type": "status",
+		"time": 3, "damage": 3,
+		"element": "poison",
 	}
-
-	alice1 := Person{"Alice", 30}
-	alice2 := alice1
-	fmt.Println(alice1 == alice2)   // => true, they have the same field values
-	fmt.Println(&alice1 == &alice2) // => false, they have different addresses
-
-	alice2.Age += 10
-	fmt.Println(alice1.Age, alice2.Age)
-
+	poisonPot := menu.Item{
+		Name:   "Poison Potion",
+		Type:   "spell",
+		Effect: moncul,
+		Price:  1000,
+	}
+	menu.Shop = &ShopKeeper
+	ShopKeeper.Inventory.Items = map[*menu.Item]int{&potions2: 1, &poisonPot: 1}
+	Player.Init("Link", "Royal Knight", 1, 10, 7, map[*menu.Item]int{&potions2: 10, &poisonPot: 1})
+	Player.AccessInventory()
+	ShopKeeper.AccessInventory()
+	fmt.Print("------\n")
+	ShopKeeper.BuyMenu()
+	fmt.Print("------\n")
+	Player.AccessInventory()
+	ShopKeeper.AccessInventory()
 }

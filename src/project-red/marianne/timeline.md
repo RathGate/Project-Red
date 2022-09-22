@@ -13,3 +13,7 @@
       -> 14-17h30: Inventory functions (use, add, remove Items)
       -> Shop is Next !
 
+22/09: avancée des quêtes le plus loin possible, création du Shop et des fonctions associées
+      -> 8h30-11h: Tâche 7 (Marchand version simplifié, quête terminée en elle-même (transfert de potion) mais fonctionnalités avancées à terminer (transfert d'autres objets, argent, vente d'objet au marchand))
+      -> 11h : Tâche 8 (Character.IsDead()), reste à l'utiliser dans les combats
+      -> 11h30-14h: Shop, reste à gérer le surnombre d'items et l'argent.
