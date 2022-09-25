@@ -2,7 +2,7 @@ package menu
 
 import (
 	"fmt"
-	"os"
+	"strings"
 )
 
 var P1 Character
@@ -10,77 +10,53 @@ var P1 Character
 type Character struct {
 	Name      string
 	Class     string
+	Skills    []Item
 	Level     int
 	Max_hp    int
 	Curr_hp   int
 	Inventory Inventory
 }
 
-func (p *Character) Init(name, class string, level, max_hp, curr_hp int, inventory map[*Item]int) {
-	p.Name = name
-	p.Class = class
-	p.Level = level
-	p.Max_hp = max_hp
-	p.Curr_hp = curr_hp
-	p.Inventory.Items = inventory
+func (p *Character) Init() {
+	// fmt.Println(`"Hello, stranger...`)
+	// time.Sleep(1500 * time.Millisecond)
+	// fmt.Println("Not a lot of lost souls comes wandering down here...")
+	// time.Sleep(2000 * time.Millisecond)
+	// fmt.Print("Tell me... ")
+	// time.Sleep(1500 * time.Millisecond)
+	// fmt.Println(`What's your name ?"`)
+	// p.Name = GetInputStr("name")
+	// fmt.Print(`"My eyes can't see anymore...`)
+	// time.Sleep(1500 * time.Millisecond)
+	// fmt.Print(" Are you\n")
+	// fmt.Println(`a 'Human' ? An 'Elf' ? Or maybe a 'Dwarf'?"`)
+	// p.Class = GetInputStr("class")
+	p.Name = "Marianne"
+	p.Class = "Human"
+	p.Level = 1
+	switch p.Class {
+	case "Human":
+		p.Max_hp = 100
+	case "Elf":
+		p.Max_hp = 80
+	case "Dwarf":
+		p.Max_hp = 120
+	}
+	p.Curr_hp = p.Max_hp - 2
+	p.Inventory.Items = map[*Item]int{&PoisonPotion: 1, &Potion: 2}
 	p.Inventory.Money = 100
+	p.Skills = append(p.Skills, Punch)
 	P1 = *p
 }
 
 func (p Character) DisplayInfo() {
-	fmt.Println("Name:", p.Name)
-	fmt.Println("Class:", p.Class)
-	fmt.Println("Level:", p.Level)
-	fmt.Println("Max HP:", p.Max_hp)
-	fmt.Println("HP:", p.Curr_hp)
-	fmt.Println("Inventory:")
-	if len(p.Inventory.Items) == 0 {
-		fmt.Println("*** EMPTY ***")
-	} else {
-		for item, count := range p.Inventory.Items {
-			fmt.Printf("   %v: %v\n", item.Name, count)
-		}
-	}
-	fmt.Print("\n")
-}
+	fmt.Printf("----- %v'S INFO -----\n", strings.ToUpper(p.Name))
+	fmt.Printf("HP: %v/%v\n", p.Curr_hp, p.Max_hp)
+	fmt.Println("CLASS:", p.Class)
+	fmt.Println("LEVEL:", p.Level)
+	fmt.Println("\n0 // Quit")
 
-func (p Character) AccessInventory() {
-	fmt.Printf("----- %v's INVENTORY: -----\n", p.Name)
-	if len(p.Inventory.Items) == 0 {
-		fmt.Println("*** EMPTY ***")
-	} else {
-		for item, count := range p.Inventory.Items {
-			fmt.Printf("   %v: %v\n", item.Name, count)
-		}
-	}
-}
-
-func MainMenu() {
-	fmt.Println(">>> `D` to Display character information")
-	fmt.Println(">>> `I` to display current Inventory")
-	fmt.Println(">>> `S` to Shop")
-	fmt.Println(">>> `P` to take a Potion")
-	fmt.Println(">>> `Q` to Quit game")
-
-	var answer string
-	fmt.Scanf("%s\n", &answer)
-
-	switch answer {
-	case "D":
-		P1.DisplayInfo()
-	case "I":
-		P1.AccessInventory()
-	case "S":
-		Shop.BuyMenu()
-	case "Q":
-		os.Exit(0)
-	case "P":
-		for item := range P1.Inventory.Items {
-			if item.Name == "Poison Potion" {
-				P1.Inventory.UseItem(item, &P1)
-			}
-		}
-	}
+	_ = AskUserInt(0, []int{0})
 }
 
 func (c *Character) IsDead() bool {

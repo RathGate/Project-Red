@@ -116,7 +116,7 @@ func ChooseDirection(originMap *Mapblock) string {
 	originMap.PrintDirections()
 	for !is_valid {
 		fmt.Printf("%s", "Let's try... ")
-		fmt.Scanf("%s\n", &answer)
+		fmt.Scanln(&answer)
 		for _, dir := range directions {
 			if answer == dir {
 				is_valid = true

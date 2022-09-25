@@ -17,3 +17,4 @@
       -> 8h30-11h: Tâche 7 (Marchand version simplifié, quête terminée en elle-même (transfert de potion) mais fonctionnalités avancées à terminer (transfert d'autres objets, argent, vente d'objet au marchand))
       -> 11h : Tâche 8 (Character.IsDead()), reste à l'utiliser dans les combats
       -> 11h30-14h: Shop, reste à gérer le surnombre d'items et l'argent.
+      Eva, après-midi: recherche sur les interfaces graphiques et libraries associées en go, recherche sur les structures de programmes.
