@@ -22,7 +22,6 @@ type Inventory struct {
 }
 
 func (inv *Inventory) UseItem(item *Item, target *Character) {
-
 	// HEALING ITEMS:
 	if item.Type == "heal" {
 
@@ -44,9 +43,8 @@ func (inv *Inventory) UseItem(item *Item, target *Character) {
 		inv.Items[RetrieveItemByName(item.Name, *inv)]--
 		// Deletes Item if its number hits 0 in Inventory:
 		fmt.Printf("Used: %v - Remains: %v", item.Name, inv.Items[RetrieveItemByName(item.Name, *inv)])
-
-		if inv.Items[item] == 0 {
-			delete(inv.Items, item)
+		if inv.Items[RetrieveItemByName(item.Name, *inv)] == 0 {
+			delete(inv.Items, RetrieveItemByName(item.Name, *inv))
 		}
 		time.Sleep(2 * time.Second)
 		fmt.Print("\n")
@@ -91,17 +89,14 @@ func (inv *Inventory) AddToInventory(item *Item, count int) {
 }
 
 func (inv *Inventory) RemoveFromInventory(item *Item, count int) {
-	// for i := range inv.Items {
-	// 	if item == i.Name {
-	// 		inv.Items[i] -= count
+	item = RetrieveItemByName(item.Name, *inv)
 
-	// 		if inv.Items[i] <= 0 {
-	// 			delete(inv.Items, i)
-	// 		}
-	// 		return
-	// 	}
-	// }
-	fmt.Print("Something went wrong...\n")
+	inv.Items[item] -= count
+
+	if inv.Items[item] <= 0 {
+		delete(inv.Items, item)
+		return
+	}
 }
 
 func (inv Inventory) IsFull() (bool, int) {
@@ -123,7 +118,6 @@ func (s *ShopKeeper) SelectShopItem(player *Character, index int) {
 		fmt.Printf(`"%v ? I have %v of them, %v₽ each.`, item.Name, max, item.Price)
 		fmt.Print("\n" + `How many do you need ?"` + "\n")
 		fmt.Printf("%vMoney: %v₽\n\n", strings.Repeat(" ", 28-len(strconv.Itoa(P1.Inventory.Money))), P1.Inventory.Money)
-		fmt.Println("0 // Quit")
 		count = AskUserInt(max, []int{})
 	}
 	if count > 1 {
@@ -132,7 +126,6 @@ func (s *ShopKeeper) SelectShopItem(player *Character, index int) {
 		fmt.Printf("This %v will cost you %v₽, please.\n", item.Name, item.Price)
 	}
 	fmt.Printf("%vMoney: %v₽\n\n", strings.Repeat(" ", 28-len(strconv.Itoa(P1.Inventory.Money))), P1.Inventory.Money)
-	fmt.Println("0 // Quit")
 	answer := AskUserInt(1, []int{})
 
 	if answer == 0 {
@@ -151,13 +144,12 @@ func (i Item) ItemMenu(count int, inv Inventory) {
 		fmt.Println("1 // Use")
 	}
 	fmt.Println("2 // Discard")
-	fmt.Println("\n0 // Quit")
 	answer := AskUserInt(0, validAns)
 	switch answer {
 	case 1:
 		inv.UseItem(&i, &P1)
 	case 2:
-		fmt.Println("Discard")
+		inv.DiscardItem(&i, count)
 	default:
 		return
 	}

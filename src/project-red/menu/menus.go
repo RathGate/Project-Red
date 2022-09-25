@@ -13,7 +13,6 @@ func OpenMenu() {
 	fmt.Println("1 // Display info")
 	fmt.Println("2 // Inventory")
 	fmt.Println("3 // Shop")
-	fmt.Println("\n0 // Quit")
 
 	var answer int = AskUserInt(3, []int{})
 
@@ -34,24 +33,24 @@ func OpenMenu() {
 
 func (p Character) AccessInventory() {
 	for {
+		keys := Sorted(&p.Inventory)
 		fmt.Printf("------ %v's INVENTORY: ------\n", strings.ToUpper(p.Name))
 		fmt.Printf("%vMoney: %v₽\n\n", strings.Repeat(" ", 28-len(strconv.Itoa(p.Inventory.Money))), p.Inventory.Money)
-		var index int
+		var position = 0
 		if len(p.Inventory.Items) == 0 {
 			fmt.Println("*** EMPTY ***")
 		} else {
-			arr := MapToArr(p.Inventory.Items)
-			for index = 0; index < len(arr); index++ {
-				fmt.Printf("%v // %v (x%v)\n", index+1, arr[index][0].(Item).Name, arr[index][1].(int))
+			for index, element := range keys {
+				fmt.Printf("%v // %v (x%v)\n", index+1, element.Name, p.Inventory.Items[element])
+				position++
 			}
 		}
 
-		fmt.Println("\n0 // Quit")
-		answer := AskUserInt(index, []int{})
+		answer := AskUserInt(position, []int{})
 		if answer == 0 {
 			return
 		} else {
-			selectedItem, count := p.Inventory.SelectItem(answer - 1)
+			selectedItem, count := keys[answer-1], p.Inventory.Items[keys[answer-1]]
 			selectedItem.ItemMenu(count, p.Inventory)
 		}
 	}
@@ -70,7 +69,6 @@ func (s *ShopKeeper) BuyMenu() {
 		if len(s.Inventory.Items) == 0 {
 			fmt.Println(`"I have nothing left for now,`)
 			fmt.Println(`please come back another time!"`)
-			fmt.Println("\n0 // Quit")
 
 			answer = AskUserInt(0, []int{0})
 
@@ -91,7 +89,6 @@ func (s *ShopKeeper) BuyMenu() {
 				fmt.Printf("%v // %v %v %v₽\n", index+1, arr[index][0].(Item).Name, strings.Repeat(" ", 25-len(arr[index][0].(Item).Name)), arr[index][0].(Item).Price)
 			}
 
-			fmt.Println("\n0 // Quit")
 			answer = AskUserInt(index, []int{})
 		}
 
@@ -102,5 +99,24 @@ func (s *ShopKeeper) BuyMenu() {
 			s.SelectShopItem(&P1, answer-1)
 			// selectedItem.BuyItem(&P1, s, count)
 		}
+	}
+}
+
+func (inv *Inventory) DiscardItem(i *Item, count int) {
+	answer := count
+
+	if count > 1 {
+		fmt.Printf("How many %v do you wanna throw away ? (max %v)\n", i.Name, count)
+		answer = AskUserInt(count, []int{})
+	}
+	if answer == 0 {
+		return
+	}
+	fmt.Printf("You're about to throw %v %v away.\n", answer, i.Name)
+	fmt.Println("Are you sure ?")
+	confirm := AskUserInt(1, []int{})
+
+	if confirm == 1 {
+		inv.RemoveFromInventory(i, answer)
 	}
 }

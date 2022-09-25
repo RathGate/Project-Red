@@ -10,7 +10,6 @@ var GameEnded bool = false
 
 func main() {
 	Player.Init()
-	// ShopKeeper.DisplayInfo()
 	for !GameEnded {
 		menu.OpenMenu()
 	}

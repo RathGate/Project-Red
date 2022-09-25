@@ -42,8 +42,8 @@ func (p *Character) Init() {
 	case "Dwarf":
 		p.Max_hp = 120
 	}
-	p.Curr_hp = p.Max_hp - 2
-	p.Inventory.Items = map[*Item]int{&PoisonPotion: 1, &Potion: 2}
+	p.Curr_hp = p.Max_hp / 2
+	p.Inventory.Items = map[*Item]int{&PoisonPotion: 5, &Potion: 1}
 	p.Inventory.Money = 100
 	p.Skills = append(p.Skills, Punch)
 	P1 = *p
@@ -54,7 +54,6 @@ func (p Character) DisplayInfo() {
 	fmt.Printf("HP: %v/%v\n", p.Curr_hp, p.Max_hp)
 	fmt.Println("CLASS:", p.Class)
 	fmt.Println("LEVEL:", p.Level)
-	fmt.Println("\n0 // Quit")
 
 	_ = AskUserInt(0, []int{0})
 }
