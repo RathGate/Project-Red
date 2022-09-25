@@ -32,23 +32,19 @@ func AskUserInt(max int, arr []int) int {
 		fmt.Printf("   → ")
 		if _, err := fmt.Fscanln(stdin, &answer); err != nil {
 			DiscardBuffer(stdin)
-			fmt.Println("nil")
 			continue
 		}
 
 		if max != 0 && (answer < 0 || answer > max) {
 			DiscardBuffer(stdin)
-			fmt.Println("out of max")
 			continue
 		}
 		if len(arr) == 0 && max == 0 && !(answer == 0) {
 			DiscardBuffer(stdin)
-			fmt.Print("?")
 			continue
 		}
 		if len(arr) != 0 && !(slices.Contains(arr, answer)) {
 			DiscardBuffer(stdin)
-			fmt.Println("Out of slice")
 			continue
 		}
 		break

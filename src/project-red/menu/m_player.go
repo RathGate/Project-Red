@@ -3,6 +3,7 @@ package menu
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 var P1 Character
@@ -18,21 +19,19 @@ type Character struct {
 }
 
 func (p *Character) Init() {
-	// fmt.Println(`"Hello, stranger...`)
-	// time.Sleep(1500 * time.Millisecond)
-	// fmt.Println("Not a lot of lost souls comes wandering down here...")
-	// time.Sleep(2000 * time.Millisecond)
-	// fmt.Print("Tell me... ")
-	// time.Sleep(1500 * time.Millisecond)
-	// fmt.Println(`What's your name ?"`)
-	// p.Name = GetInputStr("name")
-	// fmt.Print(`"My eyes can't see anymore...`)
-	// time.Sleep(1500 * time.Millisecond)
-	// fmt.Print(" Are you\n")
-	// fmt.Println(`a 'Human' ? An 'Elf' ? Or maybe a 'Dwarf'?"`)
-	// p.Class = GetInputStr("class")
-	p.Name = "Marianne"
-	p.Class = "Human"
+	fmt.Println(`"Hello, stranger...`)
+	time.Sleep(1500 * time.Millisecond)
+	fmt.Println("Not a lot of lost souls comes wandering down here...")
+	time.Sleep(2000 * time.Millisecond)
+	fmt.Print("Tell me... ")
+	time.Sleep(1500 * time.Millisecond)
+	fmt.Println(`What's your name ?"`)
+	p.Name = GetInputStr("name")
+	fmt.Print(`"My eyes can't see anymore...`)
+	time.Sleep(1500 * time.Millisecond)
+	fmt.Print(" Are you\n")
+	fmt.Println(`a 'Human' ? An 'Elf' ? Or maybe a 'Dwarf'?"`)
+	p.Class = GetInputStr("class")
 	p.Level = 1
 	switch p.Class {
 	case "Human":
