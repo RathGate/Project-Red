@@ -25,9 +25,12 @@ var Iceball = Item{
 
 var FireBook = Item{
 	Name:     "SpellBook - Fireball",
-	Category: "book",
+	Category: "item",
+	Type:     "book",
 	Price:    25,
+	Effect:   map[string]interface{}{"learn": Fireball},
 }
+
 var Fireball = Item{
 	Name:     "Fireball",
 	Category: "skill",

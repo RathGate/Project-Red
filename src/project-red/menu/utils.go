@@ -12,14 +12,14 @@ import (
 	"golang.org/x/text/language"
 )
 
-func MapToArr(mp map[*Item]int) [][]interface{} {
-	var arr [][]interface{}
-	for key, value := range mp {
-		temp := []interface{}{*key, value}
-		arr = append(arr, temp)
+func Sorted(inv *Inventory) []*Item {
+	keys := make([]*Item, 0)
+	for k := range inv.Items {
+		keys = append(keys, k)
 	}
-	return arr
+	return keys
 }
+
 func DiscardBuffer(r *bufio.Reader) {
 	r.Discard(r.Buffered())
 }
@@ -120,5 +120,5 @@ func RetrieveItemByName(name string, inv Inventory) *Item {
 			return item
 		}
 	}
-	return &Item{}
+	return &Item{Name: "0emp0"}
 }

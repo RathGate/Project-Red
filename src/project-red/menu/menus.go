@@ -18,7 +18,8 @@ func OpenMenu() {
 
 	switch answer {
 	case 1:
-		P1.DisplayInfo()
+		// P1.DisplayInfo()
+		PrintInfo(&P1)
 	case 2:
 		P1.AccessInventory()
 	case 3:
@@ -59,9 +60,9 @@ func (p Character) AccessInventory() {
 func (s *ShopKeeper) BuyMenu() {
 	var firstBuy bool = true
 	for {
+		keys := Sorted(&s.Inventory)
 		if firstBuy {
-			fmt.Print("------------ SHOPKEEPER: -----------\n")
-			fmt.Printf("%vMoney: %v₽\n\n", strings.Repeat(" ", 28-len(strconv.Itoa(P1.Inventory.Money))), P1.Inventory.Money)
+			fmt.Print("------------ SHOPKEEPER: -----------\n\n")
 		}
 		var answer int
 
@@ -75,28 +76,31 @@ func (s *ShopKeeper) BuyMenu() {
 			// SHOPKEEPER'S INVENTORY IS NOT EMPTY:
 		} else {
 			if firstBuy {
-				fmt.Print(`"Here's what I have for you!"` + "\n\n")
+				fmt.Print(`"Here's what I have for you!"` + "\n")
 				firstBuy = false
 			} else {
-				fmt.Print(`"Do you need something else ?"` + "\n\n")
+				fmt.Print(`"Do you need something else ?"` + "\n")
 			}
+			fmt.Printf("%vMoney: %v₽\n\n", strings.Repeat(" ", 27-len(strconv.Itoa(P1.Inventory.Money))), P1.Inventory.Money)
 
-			var index int
+			var position int
 
 			// Prints each item to sell and asks for an input:
-			arr := MapToArr(s.Inventory.Items)
-			for index = 0; index < len(arr); index++ {
-				fmt.Printf("%v // %v %v %v₽\n", index+1, arr[index][0].(Item).Name, strings.Repeat(" ", 25-len(arr[index][0].(Item).Name)), arr[index][0].(Item).Price)
+			for index, element := range keys {
+				fmt.Printf("%v // %v %v %v₽\n", index+1, element.Name, strings.Repeat(" ", 25-len(element.Name)), element.Price)
+				position++
 			}
-
-			answer = AskUserInt(index, []int{})
+			answer = AskUserInt(position, []int{})
 		}
 
 		// PROCESSES THE USER'S INPUT:
 		if answer == 0 {
 			return
 		} else {
-			s.SelectShopItem(&P1, answer-1)
+			selectedItem, count := keys[answer-1], s.Inventory.Items[keys[answer-1]]
+			s.SelectShopItem(selectedItem, count)
+
+			// s.SelectShopItem(&P1, answer-1)
 			// selectedItem.BuyItem(&P1, s, count)
 		}
 	}
@@ -113,7 +117,8 @@ func (inv *Inventory) DiscardItem(i *Item, count int) {
 		return
 	}
 	fmt.Printf("You're about to throw %v %v away.\n", answer, i.Name)
-	fmt.Println("Are you sure ?")
+	fmt.Print("Are you sure ?\n" + "\n")
+	fmt.Print("1 // Ok !")
 	confirm := AskUserInt(1, []int{})
 
 	if confirm == 1 {

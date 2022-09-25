@@ -61,14 +61,25 @@ func (inv *Inventory) UseItem(item *Item, target *Character) {
 				fmt.Printf("%v/%v\n", target.Curr_hp, target.Max_hp)
 			}
 		}
-		inv.Items[item]--
-		if inv.Items[item] == 0 {
-			delete(inv.Items, item)
-		}
+		inv.RemoveFromInventory(item, 1)
+
 		return
 	}
 
+	if item.Type == "book" {
+		temp := item.Effect["learn"].(Item)
+		for _, i := range P1.Skills {
+			if i.Name == temp.Name {
+				fmt.Println("You already know that skill...")
+				return
+			}
+		}
+		target.Skills = append(target.Skills, temp)
+		inv.RemoveFromInventory(item, 1)
+		return
+	}
 }
+
 func (inv *Inventory) AddToInventory(item *Item, count int) {
 	invStatus, invCount := inv.IsFull()
 	if invStatus {
@@ -107,12 +118,7 @@ func (inv Inventory) IsFull() (bool, int) {
 	return (count >= 10), count
 }
 
-func (inv Inventory) SelectItem(index int) (Item, int) {
-	inventoryArr := MapToArr(inv.Items)
-	return inventoryArr[index][0].(Item), inventoryArr[index][1].(int)
-}
-func (s *ShopKeeper) SelectShopItem(player *Character, index int) {
-	item, max := MapToArr(s.Inventory.Items)[index][0].(Item), MapToArr(s.Inventory.Items)[index][1].(int)
+func (s *ShopKeeper) SelectShopItem(item *Item, max int) {
 	var count int = 1
 	if max > 1 {
 		fmt.Printf(`"%v ? I have %v of them, %v₽ each.`, item.Name, max, item.Price)
@@ -126,12 +132,14 @@ func (s *ShopKeeper) SelectShopItem(player *Character, index int) {
 		fmt.Printf("This %v will cost you %v₽, please.\n", item.Name, item.Price)
 	}
 	fmt.Printf("%vMoney: %v₽\n\n", strings.Repeat(" ", 28-len(strconv.Itoa(P1.Inventory.Money))), P1.Inventory.Money)
+
+	fmt.Print("1 // Ok !")
 	answer := AskUserInt(1, []int{})
 
 	if answer == 0 {
 		return
 	}
-	s.BuyItem(player, &item, count)
+	s.BuyItem(&P1, item, count)
 
 }
 func (i Item) ItemMenu(count int, inv Inventory) {
@@ -139,7 +147,7 @@ func (i Item) ItemMenu(count int, inv Inventory) {
 
 	validAns := []int{0, 2}
 
-	if i.Type == "heal" {
+	if i.Type == "heal" || i.Type == "book" {
 		validAns = append(validAns, 1)
 		fmt.Println("1 // Use")
 	}

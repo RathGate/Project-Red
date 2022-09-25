@@ -23,6 +23,7 @@ func (s *ShopKeeper) BuyItem(player *Character, item *Item, count int) {
 	} else if invFull, invCount := player.Inventory.IsFull(); invFull || invCount+count > 10 {
 		fmt.Println(`"It seems your bag is too heavy to buy this...`)
 	} else {
+		player.Inventory.Money -= item.Price * count
 		player.Inventory.AddToInventory(item, count)
 		s.Inventory.RemoveFromInventory(item, count)
 		fmt.Printf("------ BOUGHT %v %v FROM %v ------\n\n", strings.ToUpper(item.Name), count, strings.ToUpper(s.Name))

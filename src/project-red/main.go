@@ -9,7 +9,9 @@ var ShopKeeper = menu.ShopDude
 var GameEnded bool = false
 
 func main() {
+	// Utilisation du package menu:
 	Player.Init()
+
 	for !GameEnded {
 		menu.OpenMenu()
 	}
