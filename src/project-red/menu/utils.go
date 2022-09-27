@@ -1,5 +1,7 @@
 package menu
 
+// UTILITARY FUNCTIONS:
+
 import (
 	"bufio"
 	"fmt"
@@ -12,6 +14,8 @@ import (
 	"golang.org/x/text/language"
 )
 
+// PUTS ALL KEYS OF A MAP INTO AN ARRAY
+// Used to dodge the random map keys problem in the inventories:
 func Sorted(inv *Inventory) []*Item {
 	keys := make([]*Item, 0)
 	for k := range inv.Items {
@@ -20,11 +24,14 @@ func Sorted(inv *Inventory) []*Item {
 	return keys
 }
 
+// USED TO EMPTY BUFFER AND MAKE SUCCEEDING SCANS WORK:
 func DiscardBuffer(r *bufio.Reader) {
 	r.Discard(r.Buffered())
 }
 
-func AskUserInt(max int, arr []int) int {
+// GET A VALID NUMERIC INPUT FROM USER (max: value if input must be between 0 & max)
+// (arr: if valid values are not a chain of numbers ([0, 2, 3] for exemple)
+func GetInputInt(max int, arr []int) int {
 	var answer int
 	stdin := bufio.NewReader(os.Stdin)
 	fmt.Println("\n0 // Quit")
@@ -53,6 +60,8 @@ func AskUserInt(max int, arr []int) int {
 	return answer
 }
 
+// GET A VALID STRING INPUT FROM USER:
+// (inputType if to display the right errors, used for player.Name and player.Class)
 func GetInputStr(inputType string) string {
 	var answer string
 	stdin := bufio.NewReader(os.Stdin)
@@ -88,6 +97,7 @@ func GetInputStr(inputType string) string {
 	return cases.Title(language.English).String(answer)
 }
 
+// FONCTION DE TEST (pour print infos et inventaires)
 func PrintInfo(char *Character) {
 	fmt.Print("------ INIT RESULTS ------\n\n")
 	fmt.Printf("NAME: %v\n", char.Name)
@@ -114,8 +124,9 @@ func PrintInfo(char *Character) {
 	fmt.Println()
 }
 
-func RetrieveItemByName(name string, inv Inventory) *Item {
-	for item := range inv.Items {
+// USED TO FIND AN ITEM IN AN INVENTORY BASED ON ITS NAME:
+func RetrieveItemByName(name string, inventory Inventory) *Item {
+	for item := range inventory.Items {
 		if name == item.Name {
 			return item
 		}
