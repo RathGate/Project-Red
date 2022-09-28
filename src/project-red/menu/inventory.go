@@ -5,9 +5,9 @@ import (
 )
 
 type Inventory struct {
-	Items     map[*Item]int
-	Equipment []string
-	Money     int
+	Items    map[*Item]int
+	Money    int
+	Capacity int
 }
 
 // ADDS [count] [item] TO THE INVENTORY
@@ -53,4 +53,8 @@ func (inventory Inventory) IsFull() (bool, int) {
 		count += number
 	}
 	return (count >= 10), count
+}
+
+func (inventory *Inventory) UpgradeInventorySlot() {
+	inventory.Capacity += 10
 }

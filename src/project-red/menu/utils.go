@@ -16,7 +16,7 @@ import (
 
 // PUTS ALL KEYS OF A MAP INTO AN ARRAY
 // Used to dodge the random map keys problem in the inventories:
-func Sorted(inv *Inventory) []*Item {
+func MapKeysToArr(inv *Inventory) []*Item {
 	keys := make([]*Item, 0)
 	for k := range inv.Items {
 		keys = append(keys, k)
@@ -31,10 +31,12 @@ func DiscardBuffer(r *bufio.Reader) {
 
 // GET A VALID NUMERIC INPUT FROM USER (max: value if input must be between 0 & max)
 // (arr: if valid values are not a chain of numbers ([0, 2, 3] for exemple)
-func GetInputInt(max int, arr []int) int {
+func GetInputInt(max int, arr []int, environ string) int {
 	var answer int
 	stdin := bufio.NewReader(os.Stdin)
-	fmt.Println("\n0 // Quit")
+	if environ != "battle" {
+		fmt.Println("\n0 // Back")
+	}
 	for {
 		fmt.Printf("   → ")
 		if _, err := fmt.Fscanln(stdin, &answer); err != nil {
@@ -99,12 +101,12 @@ func GetInputStr(inputType string) string {
 
 // FONCTION DE TEST (pour print infos et inventaires)
 func PrintInfo(char *Character) {
-	fmt.Print("------ INIT RESULTS ------\n\n")
+	fmt.Print("------ CHARACTER INFO ------\n\n")
 	fmt.Printf("NAME: %v\n", char.Name)
 	fmt.Printf("CLASS: %v\n", char.Class)
-	fmt.Printf("HP: %v/%v\n", char.Curr_hp, char.Max_hp)
+	fmt.Printf("HP: %v/%v\n", char.Stats.Curr_hp, char.Stats.Max_hp)
 	fmt.Printf("MONEY: %v₽\n", char.Inventory.Money)
-	fmt.Printf("INVENTORY:\n")
+	fmt.Printf("INVENTORY: (%v slots)\n", char.Inventory.Capacity)
 	if len(char.Inventory.Items) == 0 {
 		fmt.Println("    --- EMPTY ---")
 	} else {
@@ -121,15 +123,15 @@ func PrintInfo(char *Character) {
 			fmt.Printf("    → %v\n", item.Name)
 		}
 	}
-	fmt.Println()
+	_ = GetInputInt(0, []int{}, "")
 }
 
 // USED TO FIND AN ITEM IN AN INVENTORY BASED ON ITS NAME:
-func RetrieveItemByName(name string, inventory Inventory) *Item {
+func RetrieveItemByName(name string, inventory Inventory) (i *Item) {
 	for item := range inventory.Items {
 		if name == item.Name {
 			return item
 		}
 	}
-	return &Item{Name: "0emp0"}
+	return i
 }

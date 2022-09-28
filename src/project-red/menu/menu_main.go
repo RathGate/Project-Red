@@ -11,9 +11,13 @@ func OpenMenu() {
 	fmt.Println("1 // Display info")
 	fmt.Println("2 // Inventory")
 	fmt.Println("3 // Shop")
-
-	var answer int = GetInputInt(3, []int{})
-
+	fmt.Println("4 // Training Battle")
+	var max int = 4
+	if !Discovered {
+		fmt.Println("5 // Who Are They ?")
+		max = 5
+	}
+	var answer int = GetInputInt(max, []int{}, "")
 	switch answer {
 	case 1:
 		// P1.DisplayInfo()
@@ -22,6 +26,12 @@ func OpenMenu() {
 		P1.AccessInventory()
 	case 3:
 		ShopDude.BuyMenu()
+	case 4:
+		// TrainingFight(&P1, &Goblin)
+	case 5:
+		fmt.Println("Prout")
+		Discovered = true
+		_ = GetInputInt(0, []int{}, "")
 	case 0:
 		fmt.Println("Bisou bébou <3")
 		time.Sleep(time.Second)
@@ -35,7 +45,7 @@ func (inventory *Inventory) DiscardItem(item *Item, count int) {
 
 	if count > 1 {
 		fmt.Printf("How many %v do you wanna throw away ? (max %v)\n", item.Name, count)
-		answer = GetInputInt(count, []int{})
+		answer = GetInputInt(count, []int{}, "")
 	}
 	if answer == 0 {
 		return
@@ -43,7 +53,7 @@ func (inventory *Inventory) DiscardItem(item *Item, count int) {
 	fmt.Printf("You're about to throw %v %v away.\n", answer, item.Name)
 	fmt.Print("Are you sure ?\n" + "\n")
 	fmt.Print("1 // Ok !")
-	confirm := GetInputInt(1, []int{})
+	confirm := GetInputInt(1, []int{}, "")
 
 	if confirm == 1 {
 		inventory.RemoveFromInventory(item, answer)

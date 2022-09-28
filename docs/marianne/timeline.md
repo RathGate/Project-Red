@@ -18,3 +18,9 @@
       -> 11h : Tâche 8 (Character.IsDead()), reste à l'utiliser dans les combats
       -> 11h30-14h: Shop, reste à gérer le surnombre d'items et l'argent.
       Eva, après-midi: recherche sur les interfaces graphiques et libraries associées en go, recherche sur les structures de programmes.
+
+27/09 : Tâche 1 to 12 terminées
+27/09 matin: refactorisation du code et commentaires mis en place pour Eva
+27/09 midi: ajout de la branche marianne pour continuer les tâches 
+
+27/09 après midi: Eva - Forgeron / Equipement 

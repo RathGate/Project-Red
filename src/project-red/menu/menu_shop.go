@@ -17,7 +17,7 @@ func (shop *ShopKeeper) BuyMenu() {
 	var firstBuy bool = true
 
 	for {
-		keys := Sorted(&shop.Inventory)
+		keys := MapKeysToArr(&shop.Inventory)
 
 		if firstBuy {
 			fmt.Print("------------ SHOPKEEPER: -----------\n\n")
@@ -29,7 +29,7 @@ func (shop *ShopKeeper) BuyMenu() {
 			fmt.Println(`"I have nothing left for now,`)
 			fmt.Println(`please come back another time!"`)
 
-			answer = GetInputInt(0, []int{0})
+			answer = GetInputInt(0, []int{0}, "")
 
 			// SHOPKEEPER'S INVENTORY IS NOT EMPTY:
 			// Prints shopkeeper's dialogue & player money
@@ -51,7 +51,7 @@ func (shop *ShopKeeper) BuyMenu() {
 			}
 
 			// Asks for user's input (an item or "quit")
-			answer = GetInputInt(position, []int{})
+			answer = GetInputInt(position, []int{}, "")
 		}
 
 		// PROCESSES THE USER'S INPUT:
@@ -71,8 +71,8 @@ func (shop *ShopKeeper) SelectShopItem(item *Item, max int) {
 	if max > 1 {
 		fmt.Printf(`"%v ? I have %v of them, %v₽ each.`, item.Name, max, item.Price)
 		fmt.Print("\n" + `How many do you need ?"` + "\n")
-		fmt.Printf("%vMoney: %v₽\n\n", strings.Repeat(" ", 28-len(strconv.Itoa(P1.Inventory.Money))), P1.Inventory.Money)
-		count = GetInputInt(max, []int{})
+		fmt.Printf("%vMoney: %v₽\n", strings.Repeat(" ", 28-len(strconv.Itoa(P1.Inventory.Money))), P1.Inventory.Money)
+		count = GetInputInt(max, []int{}, "")
 	}
 
 	// Dialogue for more than 1 item:
@@ -87,7 +87,7 @@ func (shop *ShopKeeper) SelectShopItem(item *Item, max int) {
 	// Prints money, user choices and asks for input:
 	fmt.Printf("%vMoney: %v₽\n\n", strings.Repeat(" ", 28-len(strconv.Itoa(P1.Inventory.Money))), P1.Inventory.Money)
 	fmt.Print("1 // Ok !")
-	answer := GetInputInt(1, []int{})
+	answer := GetInputInt(1, []int{}, "")
 
 	if answer == 0 {
 		return
@@ -115,8 +115,8 @@ func (shop *ShopKeeper) BuyItem(item *Item, count int) {
 		// Adds the item to player's inventory and removes it from shopkeeper's inventory:
 		P1.Inventory.AddToInventory(item, count)
 		shop.Inventory.RemoveFromInventory(item, count)
-		fmt.Printf("------ BOUGHT %v %v FROM %v ------\n\n", strings.ToUpper(item.Name), count, strings.ToUpper(shop.Name))
+		fmt.Printf("------ BOUGHT %v %v FROM %v ------\n\n", count, strings.ToUpper(item.Name), strings.ToUpper(shop.Name))
 		fmt.Println(`It's always a pleasure doing business with you!"`)
 	}
-	time.Sleep(1000 * time.Millisecond)
+	time.Sleep(1500 * time.Millisecond)
 }

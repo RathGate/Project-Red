@@ -16,7 +16,7 @@ func (c Character) Menu() {
 
 	fmt.Println("C - Character Info")
 	fmt.Println("I - Inventory")
-	fmt.Println("Q - Quit")
+	fmt.Println("Q - Back")
 
 	var selection string
 	fmt.Scanf("%s\n", &selection)
@@ -27,7 +27,7 @@ func (c Character) Menu() {
 	case "I":
 		c.AccessInventory()
 	case "Q":
-		c.Quit()
+		c.Back()
 	}
 }
 
@@ -96,7 +96,7 @@ func (c Character) AccessInventory() {
 	}
 }
 
-func (c Character) Quit() {
+func (c Character) Back() {
 	os.Exit(1)
 }
 

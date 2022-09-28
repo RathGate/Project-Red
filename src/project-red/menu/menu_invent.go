@@ -7,9 +7,9 @@ import (
 )
 
 // MENU DISPLAYING THE INVENTORY
-func (char Character) AccessInventory() {
+func (char *Character) AccessInventory() {
 	for {
-		keys := Sorted(&char.Inventory)
+		keys := MapKeysToArr(&char.Inventory)
 		fmt.Printf("------ %v's INVENTORY: ------\n", strings.ToUpper(char.Name))
 		fmt.Printf("%vMoney: %v₽\n\n", strings.Repeat(" ", 28-len(strconv.Itoa(char.Inventory.Money))), char.Inventory.Money)
 		var position = 0
@@ -22,18 +22,18 @@ func (char Character) AccessInventory() {
 			}
 		}
 
-		answer := GetInputInt(position, []int{})
+		answer := GetInputInt(position, []int{}, "")
 		if answer == 0 {
 			return
 		} else {
 			selectedItem, count := keys[answer-1], char.Inventory.Items[keys[answer-1]]
-			selectedItem.ItemMenu(count, char.Inventory)
+			selectedItem.ItemMenu(count, &char.Inventory, "")
 		}
 	}
 }
 
 // ONCE AN ITEM IS SELECTED IN THE INVENTORY MENU:
-func (item Item) ItemMenu(count int, inventory Inventory) {
+func (item *Item) ItemMenu(count int, inventory *Inventory, environ string) {
 	fmt.Printf("You selected: %v (x%v)\n", item.Name, count)
 
 	validAns := []int{0, 2}
@@ -42,13 +42,20 @@ func (item Item) ItemMenu(count int, inventory Inventory) {
 		validAns = append(validAns, 1)
 		fmt.Println("1 // Use")
 	}
-	fmt.Println("2 // Discard")
-	answer := GetInputInt(0, validAns)
+	fmt.Println("2 // Description")
+	if environ != "battle" {
+		validAns = append(validAns, 3)
+		fmt.Println("3 // Discard")
+	}
+
+	answer := GetInputInt(0, validAns, "")
 	switch answer {
 	case 1:
-		inventory.UseItem(&item, &P1)
+		inventory.UseItem(item, &P1)
 	case 2:
-		inventory.DiscardItem(&item, count)
+		item.DisplayDescription()
+	case 3:
+		inventory.DiscardItem(item, count)
 	default:
 		return
 	}

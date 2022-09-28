@@ -11,64 +11,68 @@ type Item struct {
 	Category    string
 	Type        string
 	Price       int
+	BattleUse   bool
 	Effect      map[string]interface{}
 }
 
 func (inventory *Inventory) UseItem(item *Item, target *Character) {
-	// HEALING ITEMS:
-	if item.Type == "heal" {
 
-		// If Player HP bar is already full:
-		if P1.Curr_hp == P1.Max_hp {
+	switch item.Type {
+
+	case "heal":
+		if P1.Stats.Curr_hp == P1.Stats.Max_hp {
 			fmt.Println("There's no need to take this right now...")
 			time.Sleep(2 * time.Second)
 			fmt.Println()
 			return
 		}
 		// Else: Take the item
-		fmt.Printf("Current HP: %v/%v\n", P1.Curr_hp, P1.Max_hp)
-		if P1.Curr_hp+item.Effect["damage"].(int) > P1.Max_hp {
-			P1.Curr_hp = P1.Max_hp
+		fmt.Printf("Previous HP: %v/%v | ", P1.Stats.Curr_hp, P1.Stats.Max_hp)
+		if P1.Stats.Curr_hp+item.Effect["damage"].(int) > P1.Stats.Max_hp {
+			P1.Stats.Curr_hp = P1.Stats.Max_hp
 		} else {
-			P1.Curr_hp += item.Effect["damage"].(int)
+			P1.Stats.Curr_hp += item.Effect["damage"].(int)
 		}
-		fmt.Printf("Current HP: %v/%v\n", P1.Curr_hp, P1.Max_hp)
-		inventory.Items[RetrieveItemByName(item.Name, *inventory)]--
-		// Deletes Item if its number hits 0 in Inventory:
-		fmt.Printf("Used: %v - Remains: %v", item.Name, inventory.Items[RetrieveItemByName(item.Name, *inventory)])
-		if inventory.Items[RetrieveItemByName(item.Name, *inventory)] == 0 {
-			delete(inventory.Items, RetrieveItemByName(item.Name, *inventory))
-		}
-		time.Sleep(2 * time.Second)
-		fmt.Print("\n")
-		return
-	}
+		fmt.Printf("Current HP: %v/%v\n", P1.Stats.Curr_hp, P1.Stats.Max_hp)
 
-	// SPELLS OR SPELL-LIKE ITEMS:
-	if item.Type == "spell" {
+	case "spell":
 		switch item.Effect["type"] {
 		case "status":
 			for i := item.Effect["time"].(int); i > 0 && !target.IsDead(); i-- {
 				time.Sleep(1 * time.Second)
-				target.Curr_hp -= 1
-				fmt.Printf("%v/%v\n", target.Curr_hp, target.Max_hp)
+				target.Stats.Curr_hp -= 1
+				fmt.Printf("%v/%v\n", target.Stats.Curr_hp, target.Stats.Max_hp)
 			}
 		}
-		inventory.RemoveFromInventory(item, 1)
 
-		return
-	}
+	case "book":
 
-	if item.Type == "book" {
-		temp := item.Effect["learn"].(Item)
-		for _, i := range P1.Skills {
-			if i.Name == temp.Name {
-				fmt.Println("You already know that skill...")
+		if item.Effect["type"].(string) == "skill" {
+			temp := item.Effect["learn"].(Item)
+			for _, i := range P1.Skills {
+				if i.Name == temp.Name {
+					fmt.Println("You already know that skill...")
+					return
+				}
+			}
+			target.Skills = append(target.Skills, temp)
+
+		} else if item.Effect["type"].(string) == "expand" {
+			if inventory.Capacity >= 40 {
+				fmt.Println("Hey look at you ! Do you really think your\nback could hold any more items?\n", inventory.Capacity)
 				return
 			}
+			inventory.UpgradeInventorySlot()
+			fmt.Printf("Your bag is bigger now ! It can hold up to %v items !\n", inventory.Capacity)
 		}
-		target.Skills = append(target.Skills, temp)
-		inventory.RemoveFromInventory(item, 1)
-		return
+
 	}
+	inventory.RemoveFromInventory(item, 1)
+
+	_ = GetInputInt(0, []int{}, "")
+}
+
+func (item Item) DisplayDescription() {
+	fmt.Println(item.Description)
+	_ = GetInputInt(0, []int{}, "")
 }
