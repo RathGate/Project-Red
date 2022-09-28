@@ -31,7 +31,7 @@ func (inventory *Inventory) AddToInventory(item *Item, count int) {
 	inventory.Items[item] = count
 }
 
-func (inv *Inventory) RemoveFromInventory(item *Item, count int) {
+func (inv *Inventory) RemoveFromInventory(item *Item, count int) bool {
 	item = RetrieveItemByName(item.Name, *inv)
 
 	// Deletes [count] of [item] from the inventory.
@@ -40,8 +40,9 @@ func (inv *Inventory) RemoveFromInventory(item *Item, count int) {
 	// If 0 or less items in the inventory, deletes the full item:
 	if inv.Items[item] <= 0 {
 		delete(inv.Items, item)
-		return
+		return true
 	}
+	return false
 }
 
 // CHECKS IF INVENTORY IS FULL:

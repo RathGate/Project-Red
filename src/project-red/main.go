@@ -12,9 +12,10 @@ func main() {
 	// Utilisation du package menu:
 	Player.Init()
 
-	// var Goblin = &menu.Goblin
+	var Goblin = &menu.Goblin
 
-	// Goblin.InitEnemy("Goblin", 40, 40, 5)
+	Goblin.InitEnemy("Goblin", 40, 40, 5)
+
 	for !GameEnded {
 		menu.OpenMenu()
 	}

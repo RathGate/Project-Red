@@ -15,7 +15,7 @@ type Item struct {
 	Effect      map[string]interface{}
 }
 
-func (inventory *Inventory) UseItem(item *Item, target *Character) {
+func (inventory *Inventory) UseItem(item *Item, target *Character, environ string) bool {
 
 	switch item.Type {
 
@@ -24,9 +24,14 @@ func (inventory *Inventory) UseItem(item *Item, target *Character) {
 			fmt.Println("There's no need to take this right now...")
 			time.Sleep(2 * time.Second)
 			fmt.Println()
-			return
+			return false
 		}
 		// Else: Take the item
+		if environ == "battle" {
+			DelayedAction = map[string]interface{}{"action": "item", "item": item, "target": target}
+			TurnEnded = true
+			return true
+		}
 		fmt.Printf("Previous HP: %v/%v | ", P1.Stats.Curr_hp, P1.Stats.Max_hp)
 		if P1.Stats.Curr_hp+item.Effect["damage"].(int) > P1.Stats.Max_hp {
 			P1.Stats.Curr_hp = P1.Stats.Max_hp
@@ -48,19 +53,17 @@ func (inventory *Inventory) UseItem(item *Item, target *Character) {
 	case "book":
 
 		if item.Effect["type"].(string) == "skill" {
-			temp := item.Effect["learn"].(Item)
-			for _, i := range P1.Skills {
-				if i.Name == temp.Name {
-					fmt.Println("You already know that skill...")
-					return
-				}
+			if _, learned := RetrieveSkillByName(item.Effect["learn"].(Skill).Name, target); learned {
+				fmt.Println("You already know that skill...")
+				return false
+			} else {
+				target.Skills = append(target.Skills, (item.Effect["learn"].(Skill)))
 			}
-			target.Skills = append(target.Skills, temp)
 
 		} else if item.Effect["type"].(string) == "expand" {
 			if inventory.Capacity >= 40 {
 				fmt.Println("Hey look at you ! Do you really think your\nback could hold any more items?\n", inventory.Capacity)
-				return
+				return false
 			}
 			inventory.UpgradeInventorySlot()
 			fmt.Printf("Your bag is bigger now ! It can hold up to %v items !\n", inventory.Capacity)
@@ -70,6 +73,7 @@ func (inventory *Inventory) UseItem(item *Item, target *Character) {
 	inventory.RemoveFromInventory(item, 1)
 
 	_ = GetInputInt(0, []int{}, "")
+	return true
 }
 
 func (item Item) DisplayDescription() {

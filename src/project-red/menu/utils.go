@@ -6,9 +6,11 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"projectRed/utils"
 	"regexp"
 	"time"
 
+	"github.com/mgutz/ansi"
 	"golang.org/x/exp/slices"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -34,8 +36,11 @@ func DiscardBuffer(r *bufio.Reader) {
 func GetInputInt(max int, arr []int, environ string) int {
 	var answer int
 	stdin := bufio.NewReader(os.Stdin)
-	if environ != "battle" {
-		fmt.Println("\n0 // Back")
+	if environ == "" {
+		utils.UPrint("\n0 // Back\n", 20)
+	}
+	if environ == "next" {
+		utils.UPrint("\n0 // Next\n", 20)
 	}
 	for {
 		fmt.Printf("   → ")
@@ -77,12 +82,12 @@ func GetInputStr(inputType string) string {
 			time.Sleep(1500 * time.Millisecond)
 			continue
 		}
-		if inputType == "name" && !regexp.MustCompile(`^([a-zA-Z0-9]{2,10})$`).MatchString(answer) {
+		if inputType == "name" && !regexp.MustCompile(`^([a-zA-Z]{2,10})$`).MatchString(answer) {
 			DiscardBuffer(stdin)
 			fmt.Println()
 			fmt.Println(`"I'm afraid my old ears will have you repeat it again..."`)
 			time.Sleep(1500 * time.Millisecond)
-			fmt.Println("[Not a valid name! (2-10 characters, alphanum only)]")
+			fmt.Println("[Not a valid name! (2-10 characters, letters only)]")
 			continue
 		}
 		if inputType == "class" && !slices.Contains([]string{"Human", "Elf", "Dwarf"}, answer) {
@@ -101,26 +106,27 @@ func GetInputStr(inputType string) string {
 
 // FONCTION DE TEST (pour print infos et inventaires)
 func PrintInfo(char *Character) {
-	fmt.Print("------ CHARACTER INFO ------\n\n")
-	fmt.Printf("NAME: %v\n", char.Name)
-	fmt.Printf("CLASS: %v\n", char.Class)
-	fmt.Printf("HP: %v/%v\n", char.Stats.Curr_hp, char.Stats.Max_hp)
-	fmt.Printf("MONEY: %v₽\n", char.Inventory.Money)
-	fmt.Printf("INVENTORY: (%v slots)\n", char.Inventory.Capacity)
+	utils.PrintBox(P1.Name, "C H A R A C T E R  I N F O", "Cyan")
+
+	fmt.Println(ansi.Color("NAME: ", "cyan+B") + char.Name)
+	fmt.Println(ansi.Color("CLASS: ", "cyan+B") + char.Class)
+	fmt.Printf(ansi.Color("HP: ", "cyan+B")+"%v/%v\n", char.Stats.Curr_hp, char.Stats.Max_hp)
+	fmt.Printf(ansi.Color("MONEY: ", "cyan+B")+"%v ₽\n", char.Inventory.Money)
+	fmt.Printf(ansi.Color("INVENTORY: ", "cyan+B")+"%v slots\n", char.Inventory.Capacity)
 	if len(char.Inventory.Items) == 0 {
-		fmt.Println("    --- EMPTY ---")
+		utils.UPrint(fmt.Sprintln(utils.Format("●●●● E M P T Y ●●●●", "center", 50, []string{})), 20)
 	} else {
 		for item, count := range char.Inventory.Items {
-			fmt.Printf("    → %v (x%v)\n", item.Name, count)
+			utils.UPrint(fmt.Sprintf("    → %v (x%v)\n", item.Name, count), 15)
 		}
 	}
 	fmt.Println()
-	fmt.Printf("SKILLS:\n")
+	fmt.Println(ansi.Color("SKILLS: ", "cyan+B"))
 	if len(char.Skills) == 0 {
-		fmt.Println("    --- EMPTY ---")
+		utils.UPrint(fmt.Sprintln(utils.Format("●●●● E M P T Y ●●●●", "center", 50, []string{})), 20)
 	} else {
-		for _, item := range char.Skills {
-			fmt.Printf("    → %v\n", item.Name)
+		for _, skill := range char.Skills {
+			utils.UPrint(fmt.Sprintf("    → %v\n", skill.Name), 15)
 		}
 	}
 	_ = GetInputInt(0, []int{}, "")
@@ -134,4 +140,13 @@ func RetrieveItemByName(name string, inventory Inventory) (i *Item) {
 		}
 	}
 	return i
+}
+func RetrieveSkillByName(name string, player *Character) (Skill, bool) {
+	var s Skill
+	for _, skill := range player.Skills {
+		if name == skill.Name {
+			return skill, true
+		}
+	}
+	return s, false
 }

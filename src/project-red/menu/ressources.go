@@ -21,14 +21,13 @@ var PoisonPotion = Item{
 	Effect:      map[string]interface{}{"type": "status", "time": 0, "damage": 3, "element": "poison"},
 	Price:       50,
 }
-var Iceball = Item{
+var Iceball = Skill{
 	Name:        "Iceball",
-	Description: `"Throws an iceball to an enemy. Cost: 10SP, Damage: 10HP"`,
-	Category:    "skill",
-	Type:        "spell",
-	BattleUse:   true,
-	Effect:      map[string]interface{}{"type": "attack", "time": 0, "damage": 5, "element": "ice"},
-	Price:       500,
+	Description: `"Throws an iceball to an enemy`,
+	Type:        "attack",
+	Damage:      10,
+	CostType:    "SP",
+	CostInt:     10,
 }
 
 var FireBook = Item{
@@ -40,22 +39,22 @@ var FireBook = Item{
 	Effect:      map[string]interface{}{"type": "skill", "learn": Fireball},
 }
 
-var Fireball = Item{
+var Fireball = Skill{
 	Name:        "Fireball",
-	Description: `"Throws an iceball to an enemy.\nCost: 10SP, Damage: 10HP"`,
-	Category:    "skill",
-	Type:        "spell",
-	BattleUse:   true,
-	Effect:      map[string]interface{}{"type": "attack", "time": 0, "damage": 5, "element": "fire"},
+	Description: `"Throws a fireball to an enemy.`,
+	Type:        "attack",
+	Damage:      8,
+	CostType:    "SP",
+	CostInt:     10,
 }
 
-var Punch = Item{
+var Punch = Skill{
 	Name:        "Punch",
-	Description: `"Basically throws a punch in your enemy's face.\nCost: 0, Damage: 10HP"`,
-	Category:    "skill",
+	Description: `"Basically throws a punch in your enemy's face."`,
 	Type:        "attack",
-	BattleUse:   true,
-	Effect:      map[string]interface{}{"damage": 5},
+	Damage:      8,
+	CostType:    "SP",
+	CostInt:     1,
 }
 var TrucExtraCheros = Item{
 	Name:        "Truc Super Chéros",
@@ -70,7 +69,7 @@ var OrganiserGuide = Item{
 	Effect:      map[string]interface{}{"type": "expand"},
 }
 var ShopDude = ShopKeeper{
-	Character: Character{
+	NPC{
 		Name:  "Oméga ShopDude",
 		Class: "Shop",
 		Inventory: Inventory{
@@ -79,3 +78,5 @@ var ShopDude = ShopKeeper{
 		},
 	},
 }
+
+var MainMenu_Opt []string = []string{"Display Info", "Inventory", "Shop", "Training Battle", "Who Are They ?"}

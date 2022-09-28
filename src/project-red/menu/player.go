@@ -3,6 +3,7 @@ package menu
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 var P1 Character
@@ -10,7 +11,7 @@ var P1 Character
 type Character struct {
 	Name      string
 	Class     string
-	Skills    []Item
+	Skills    []Skill
 	Inventory Inventory
 	Stats     Stats
 }
@@ -24,24 +25,23 @@ type Stats struct {
 	Curr_sp    int
 	Initiative int
 	Atk        int
+	Weapon     int
 }
 
 func (player *Character) Init() {
-	// fmt.Println(`"Hello, stranger...`)
-	// time.Sleep(1500 * time.Millisecond)
-	// fmt.Println("Not a lot of lost souls comes wandering down here...")
-	// time.Sleep(2000 * time.Millisecond)
-	// fmt.Print("Tell me... ")
-	// time.Sleep(1500 * time.Millisecond)
-	// fmt.Println(`What's your name ?"`)
-	// player.Name = GetInputStr("name")
-	// fmt.Print(`"My eyes can't see anymore...`)
-	// time.Sleep(1500 * time.Millisecond)
-	// fmt.Print(" Are you\n")
-	// fmt.Println(`a 'Human' ? An 'Elf' ? Or maybe a 'Dwarf'?"`)
-	// player.Class = GetInputStr("class")
-	player.Name = "RathGate"
-	player.Class = "Human"
+	fmt.Println(`"Hello, stranger...`)
+	time.Sleep(1500 * time.Millisecond)
+	fmt.Println("Not a lot of lost souls come wandering down here...")
+	time.Sleep(2000 * time.Millisecond)
+	fmt.Print("Tell me... ")
+	time.Sleep(1500 * time.Millisecond)
+	fmt.Println(`What's your name ?"`)
+	player.Name = GetInputStr("name")
+	fmt.Print(`"My eyes can't see anymore...`)
+	time.Sleep(1500 * time.Millisecond)
+	fmt.Print(" Are you\n")
+	fmt.Println(`a 'Human' ? An 'Elf' ? Or maybe a 'Dwarf'?"`)
+	player.Class = GetInputStr("class")
 	player.Stats.Level = 1
 	switch player.Class {
 	case "Human":
@@ -52,7 +52,7 @@ func (player *Character) Init() {
 		player.Stats.Max_hp = 120
 	}
 	player.Stats.Curr_hp = player.Stats.Max_hp / 2
-	player.Inventory.Items = map[*Item]int{&PoisonPotion: 5, &Potion: 1, &OrganiserGuide: 3}
+	player.Inventory.Items = map[*Item]int{&PoisonPotion: 1, &Potion: 3, &FireBook: 3}
 	player.Inventory.Money = 100
 	player.Inventory.Capacity = 10
 	player.Skills = append(player.Skills, Punch)
