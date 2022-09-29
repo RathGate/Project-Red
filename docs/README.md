@@ -46,4 +46,79 @@ ___
 `Item`: Informations et méthodes relatives aux items 
 ___
 
+## Fonctions
 
+Fonction d'introduction. Permet au joueur de choisir son nom et sa classe.
+```go
+Player.CharacterCreation()
+```
+
+Fonction principale du jeu. Lance le menu à choix multiple.
+
+```go
+menu.OpenMenu()
+```
+
+Affiche toutes les informations du joueur (*stats, skills, equipement*).
+```go
+PrintInfo(player)
+```
+
+Affiche l'inventaire du joueur.
+```go
+P1.AccessInventory()
+```
+
+Lance le menu de vente du vendeur.
+```go
+ShopDude.BuyMenu()
+```
+
+Lance le menu du forgeron.
+```go
+SmithGuy.BuyMenu()
+```
+
+Lance un combat d'exemple entre le joueur et l'enemie renseigné.
+```go
+TrainingFight(player, enemy)
+```
+
+Lance la fonction du mini-jeu easter egg.
+```go
+WhoAreThey()
+```
+
+Gestion de l'utilisation et de la selection des items.
+```go
+item.ItemMenu(count, player, inventory, environement)
+```
+
+Gestion de la selection des items dans les shops.
+```go
+shop.SelectShopItem(item, count)
+```
+
+Gestion de l'achat d'un item.
+```go
+shop.BuyItem(item, count)
+```
+
+Detection de l'action performé par le joueur
+```go
+player.RegisterPlayerAction(turn, enemy)
+```
+Joue l'action enregistré par `RegisterPlayerAction`
+```go
+player.PlayerTurn(turn, player, enemy)
+```
+
+Joue le tour de l'adversaire
+```go
+enemy.EnemyTurn(turn, player)
+```
+
+Donne les resultat du combat
+```
+GetBattleResults(turn, player, enemy)
+```
