@@ -11,7 +11,6 @@ ___
 *Ce projet a pour vocation d’être la démo d’un jeu-vidéo court de type RPG tour-par-tour. Les fonctionnalités disponibles dans la démo sont susceptibles d’évoluer avec le temps !*
 ___
 
-## Packages & Dépendances
 ___Packages Internes:___
 
 * ProjectRed/menu: Contient la majorité des fonctions créées pour le programme. Divisé en plusieurs fichiers dont les noms sont supposés être explicites et facilement identifiables.
@@ -28,8 +27,23 @@ ___
 
 ## Structures:
 
-`Character`: Utilisé pour le joueur
+`Character`: Utilisé pour le joueur.
 
 `NPC`: Structure interne des NPC.
 
-`ShopKeeper, BlackSmith:`  Structure des méthodes de ces derniers
+`ShopKeeper, BlackSmith`:  Structure des méthodes de ces derniers.
+
+`Price`: Structure des items possédés et vendu par les NPC pouvant vendre des objets.
+
+`Stats`: Structure des informations relatives au joueur.
+
+`Enemy`: Utilisé pour les enemies.
+
+`Equipment`: Methodes et définition de l'équipement du joueur (*Armures, Armes*)
+
+`Inventory`: Methodes liées à ce que le joueur peut transporter (*Argent, Items*)
+
+`Item`: Informations et méthodes relatives aux items 
+___
+
+
