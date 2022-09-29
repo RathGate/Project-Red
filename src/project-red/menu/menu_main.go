@@ -30,7 +30,7 @@ func OpenMenu() {
 	case 3:
 		ShopDude.BuyMenu()
 	case 4:
-		SmithDude.BuyMenu()
+		SmithGuy.BuyMenu()
 	case 5:
 		TrainingFight(&P1, &Goblin)
 	case 6:

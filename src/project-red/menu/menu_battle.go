@@ -25,9 +25,9 @@ func TrainingFight(player *Character, enemy *Enemy) {
 		// LAUNCHES THE TURN:
 		BattleIntroduction(*player, *enemy)
 
-		fmt.Println(strings.Repeat("-", 50))
-		fmt.Println("\n" + utils.Format("TURN %v", "center", 50, []string{strconv.Itoa(turn)}))
-		fmt.Println(strings.Repeat("-", 50))
+		fmt.Println(ansi.Color(strings.Repeat("-", 50), "magenta+b"))
+		fmt.Println(utils.Format("TURN %v", "center", 50, []string{strconv.Itoa(turn)}))
+		fmt.Println(ansi.Color(strings.Repeat("-", 50), "magenta+b"))
 		fmt.Print("\n")
 
 		PrintBattleInfo(*player, *enemy)
@@ -66,7 +66,7 @@ func TrainingFight(player *Character, enemy *Enemy) {
 		_ = GetInputInt(0, []int{}, "next")
 	}
 	GetBattleResults(turn, player, enemy)
-	Goblin.InitEnemy("Goblin", 40, 40, 40)
+	Goblin.Init("Goblin", 40, 40, 5, nil)
 	player.Stats.Revert()
 }
 
@@ -142,6 +142,12 @@ func (player *Character) RegisterPlayerAction(turn int, enemy *Enemy) {
 
 		default:
 			fmt.Println(ansi.Color(utils.Format("● ● ● ●| R U N  A W A Y |● ● ● ●", "center", 50, []string{}), "yellow"))
+			fmt.Println()
+			utils.UPrint("This is not a reliable option...\n", 20)
+			time.Sleep(250 * time.Millisecond)
+			utils.UPrint("Are you sure you wanna try it out ?\n\n", 20)
+
+			fmt.Print("1 // Let's try!")
 			input := GetInputInt(1, []int{}, "")
 			if input == 1 {
 				DelayedAction["type"] = "run"
@@ -161,7 +167,7 @@ func PlayerTurn(turn int, player *Character, enemy *Enemy) int {
 		utils.UPrint(fmt.Sprintf("%v uses Attack against %v !\n", player.Name, enemy.Name), 20)
 		time.Sleep(250 * time.Millisecond)
 		inflicted := player.Stats.Atk
-		if utils.IsCritical(20) {
+		if utils.IsCritical(20) == 1 {
 			utils.UPrint(ansi.Color("Critical hit !!\n", "red+b"), 20)
 			time.Sleep(250 * time.Millisecond)
 			inflicted *= 2
@@ -184,7 +190,7 @@ func PlayerTurn(turn int, player *Character, enemy *Enemy) int {
 	case "run":
 		utils.UPrint(fmt.Sprintf("%v tries to run away !\n", player.Name), 20)
 		time.Sleep(1000 * time.Millisecond)
-		if utils.IsCritical(1) {
+		if utils.IsCritical(5) == 1 {
 			utils.UPrint(ansi.Color(player.Name+" managed to run away successfully !\n", "green+b"), 20)
 			time.Sleep(1000 * time.Millisecond)
 			return -1
@@ -269,7 +275,7 @@ func (player *Character) BattleReward(xp int, item *Item) {
 	}
 
 	if item != nil {
-		utils.UPrint(fmt.Sprintf("It seems the %v carried something with them...\n", player.Name), 20)
+		utils.UPrint("It seems the opponent carried something with them...\n", 20)
 		if full, _ := player.Inventory.IsFull(); !full {
 			time.Sleep(250 * time.Millisecond)
 			player.Inventory.AddToInventory(item, 1)

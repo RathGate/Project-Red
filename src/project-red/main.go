@@ -12,7 +12,7 @@ var GameEnded bool = false
 func main() {
 	// Init. of the Goblin and the player
 	Player.CharacterCreation()
-	Goblin.InitEnemy("Goblin", 10, 40, 10)
+	Goblin.Init("Goblin", 40, 40, 5, &menu.PoisonPotion)
 	for !GameEnded {
 		menu.OpenMenu()
 	}

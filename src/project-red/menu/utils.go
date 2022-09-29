@@ -111,34 +111,28 @@ func PrintInfo(char *Character) {
 
 	fmt.Println(ansi.Color("NAME: ", "cyan+B") + char.Name)
 	fmt.Println(ansi.Color("CLASS: ", "cyan+B") + char.Class)
-	fmt.Printf(ansi.Color("HP: ", "cyan+B")+"%v/%v\n", char.Stats.Curr_hp, char.Stats.Max_hp)
 	fmt.Printf(ansi.Color("MONEY: ", "cyan+B")+"%v ₽\n", char.Inventory.Money)
-	fmt.Printf(ansi.Color("INVENTORY: ", "cyan+B")+"%v slots\n", char.Inventory.Capacity)
-	if len(char.Inventory.Items) == 0 {
-		utils.UPrint(fmt.Sprintln(utils.Format("●●●● E M P T Y ●●●●", "center", 50, []string{})), 20)
-	} else {
-		for item, count := range char.Inventory.Items {
-			utils.UPrint(fmt.Sprintf("    → %v (x%v)\n", item.Name, count), 15)
-		}
-	}
+
+	fmt.Println(ansi.Color("STATS: ", "cyan+B"))
+	fmt.Printf("    → Level: %v\n", char.Stats.Level)
+	fmt.Printf("    → HP: %v/%v\n", char.Stats.Curr_hp, char.Stats.Max_hp)
+	fmt.Printf("    → SP: %v/%v\n", char.Stats.Curr_sp, char.Stats.Max_sp)
+	fmt.Printf("    → ATK: %v\n", char.Stats.Atk)
+
 	fmt.Println()
 	fmt.Println(ansi.Color("SKILLS: ", "cyan+B"))
 	if len(char.Skills) == 0 {
 		utils.UPrint(fmt.Sprintln(utils.Format("●●●● E M P T Y ●●●●", "center", 50, []string{})), 20)
 	} else {
 		for _, skill := range char.Skills {
-			utils.UPrint(fmt.Sprintf("    → %v\n", skill.Name), 15)
+			fmt.Printf("    → %v\n", skill.Name)
 		}
 	}
 	fmt.Println()
 
 	fmt.Println(ansi.Color("EQUIPMENT: ", "cyan+B"))
-	for key, value := range EquipmentToMap() {
-		if value != nil {
-			utils.UPrint(fmt.Sprintf("%v: %v\n", key, value), 20)
-		} else {
-			utils.UPrint(fmt.Sprintf("%v: ///\n", key), 20)
-		}
+	for i, value := range EquipmentToArr() {
+		fmt.Printf("    → %v: %v\n", Equip_Opt[i], value.Name)
 	}
 
 	_ = GetInputInt(0, []int{}, "")

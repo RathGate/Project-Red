@@ -83,7 +83,7 @@ func (shop *ShopKeeper) SelectShopItem(item *Item, max int) {
 	// If more than 1 item in shop, asks for amount needed:
 	if max > 1 {
 		utils.NPCLines(fmt.Sprintf(`"%v ? I have %v of them, %v ₽ each."`, item.Name, max, item.Price.Currency), "magenta+b", 20)
-		utils.NPCLines(` do you need ?"`+"\n", "magenta+b", 20)
+		utils.NPCLines(`How many do you need ?"`+"\n", "magenta+b", 20)
 		fmt.Println(utils.Format("Money: %v ₽", "right", 50, []string{strconv.Itoa(P1.Inventory.Money)}))
 		count = GetInputInt(max, []int{}, "")
 	}
@@ -132,5 +132,5 @@ func (shop *ShopKeeper) BuyItem(item *Item, count int) {
 		fmt.Println()
 		utils.NPCLines(`It's always a pleasure doing business with you!"`+"\n", "magenta+b", 20)
 	}
-	time.Sleep(1500 * time.Millisecond)
+	time.Sleep(1000 * time.Millisecond)
 }

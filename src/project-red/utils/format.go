@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"math/rand"
 	"regexp"
 	"strings"
 	"time"
@@ -90,9 +91,7 @@ func NPCLines(str string, color string, speed int) {
 }
 
 // Returns success out of [max]
-func IsCritical(max int) bool {
-	// rand.Seed(time.Now().UnixNano())
-
-	// return 1+rand.Intn(max-1) == 1
-	return false
+func IsCritical(max int) int {
+	rand.Seed(time.Now().UnixNano())
+	return rand.Intn(max - 1)
 }

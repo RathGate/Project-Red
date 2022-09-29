@@ -104,10 +104,11 @@ func (forge *BlackSmith) CraftItem(item *Item) {
 			P1.Inventory.RemoveFromInventory(i, count)
 		}
 		P1.Inventory.AddToInventory(item, 1)
+		P1.Inventory.Money -= item.Price.Currency
 
 		utils.UPrint((ansi.Color((utils.Format("๑๑๑ CRAFTED: %v ๑๑๑\n", "center", 50, []string{strings.ToUpper(item.Name)})), "cyan+b")), 20)
 		fmt.Println()
-		utils.NPCLines(`It's always a pleasure doing business with you!"`+"\n", "white+b", 20)
+		utils.NPCLines(`"It's always a pleasure doing business with you!"`+"\n", "white+b", 20)
 	}
 	time.Sleep(1000 * time.Millisecond)
 	_ = GetInputInt(0, []int{}, "")

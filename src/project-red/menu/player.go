@@ -62,8 +62,12 @@ func (player *Character) Init(name, class string, atk int, items map[*Item]int, 
 	}
 	player.Stats.Curr_hp = player.Stats.Max_hp / 2
 	player.Stats.Max_sp, player.Stats.Curr_sp = 50, 50
+
 	player.Stats.Initiative = 10
 	player.Stats.Atk = atk
+
+	player.Equipment = SimpleEquipment
+
 }
 
 func (player *Character) CharacterCreation() {
@@ -93,7 +97,7 @@ func (player *Character) CharacterCreation() {
 	playerName := "moncul"
 	playerClass := "Elf"
 
-	player.Init(playerName, playerClass, 10, map[*Item]int{&FairyBottle: 1, &CapKnight: 1, &CapWild: 1}, 100, []Skill{Punch})
+	player.Init(playerName, playerClass, 10, map[*Item]int{&FairyBottle: 1, &Potion: 3}, 100, []Skill{Punch})
 	P1 = *player
 
 	// utils.UPrint(ansi.Color(`"I see. Take this. `, "yellow"), 60)
@@ -140,9 +144,9 @@ func (char *Character) IsRevived() bool {
 	// ELSE:
 
 	// Revive message:
-	time.Sleep(1500 * time.Millisecond)
+	time.Sleep(1000 * time.Millisecond)
 	_ = GetInputInt(0, []int{}, "")
-	time.Sleep(1500 * time.Millisecond)
+	time.Sleep(1000 * time.Millisecond)
 	utils.UPrint(ansi.Color(`"Do you really think it's time for a nap...?"`+"\n", "green+b"), 100)
 	time.Sleep(250 * time.Millisecond)
 	utils.UPrint(ansi.Color((utils.Format(`"Come on, wake up %v ! Wake up !"`, "", 50, []string{char.Name})+"\n\n"), "green+b"), 40)
@@ -152,7 +156,7 @@ func (char *Character) IsRevived() bool {
 	char.Stats.Curr_hp = char.Stats.Max_hp / 2
 	char.Inventory.RemoveFromInventory(item, 1)
 
-	utils.UPrint(fmt.Sprintf("%v has been revived by the %v !\n\n", char.Name, ansi.Color(item.Name, "green")), 40)
+	utils.UPrint(fmt.Sprintf("%v has been revived by the %v !\n", char.Name, ansi.Color(item.Name, "green")), 40)
 	time.Sleep(time.Second)
 	return true
 }

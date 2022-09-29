@@ -19,8 +19,9 @@ func BattleIntroduction(player Character, enemy Enemy) {
 	fmt.Println(utils.Format("An agressive %v ambushed you !", "center", 50, []string{enemy.Name}))
 
 	if enemy.Loot != nil {
-		fmt.Println(utils.Format("It seems to carry something interesting..."+"\n", "center", 50, []string{}))
+		fmt.Println(utils.Format("It seems to carry something interesting...", "center", 50, []string{}))
 	}
+	fmt.Println()
 }
 
 func PrintBattleInfo(player Character, enemy Enemy) {

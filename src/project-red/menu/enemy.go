@@ -8,12 +8,12 @@ type Enemy struct {
 	Exp   int
 }
 
-func (enemy *Enemy) InitEnemy(name string, curr_hp, max_hp, akt int) {
+func (enemy *Enemy) Init(name string, curr_hp, max_hp, akt int, item *Item) {
 	enemy.Name = name
 	enemy.Stats.Curr_hp = curr_hp
 	enemy.Stats.Max_hp = max_hp
 	enemy.Stats.Atk = akt
-	enemy.Loot = &PoisonPotion
+	enemy.Loot = item
 	enemy.Stats.Initiative = 10
 	enemy.Exp = 25
 	enemy.Money = 40

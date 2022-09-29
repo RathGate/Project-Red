@@ -3,6 +3,10 @@ package menu
 import (
 	"fmt"
 	"projectRed/utils"
+	"strings"
+	"time"
+
+	"github.com/mgutz/ansi"
 )
 
 type Equipment struct {
@@ -12,34 +16,7 @@ type Equipment struct {
 	Sword *Item
 }
 
-func (equipment *Equipment) Equip(item *Item) bool {
-	currEquiped := equipment.GetPiece(item.Type)
-	utils.UPrint(fmt.Sprintf("Do you want to equip %v?\n", item.Name), 20)
-	if currEquiped != nil {
-		utils.UPrint(fmt.Sprintf("[ %v is currently equiped ]\n", currEquiped.Name), 20)
-		fmt.Println()
-	}
-	utils.UPrint("1 // Yes !", 20)
-	answer := GetInputInt(1, []int{}, "")
-
-	if answer == 0 {
-		return false
-	}
-
-	// Applies and removes the buffs
-	// P1.ApplyBuff(currEquiped, item)
-	fmt.Println("jpp")
-	// Swaps the items:
-	p := P1.Equipment.Swap(item)
-	if p != nil {
-		P1.Inventory.AddToInventory(p, 1)
-	}
-
-	return true
-}
-
-func (equipment *Equipment) Swap(item *Item) *Item {
-	println("Mais wtf")
+func (equipment *Equipment) Equip(item *Item) *Item {
 	var tmp *Item = nil
 	switch item.Type {
 	case "head":
@@ -59,39 +36,42 @@ func (equipment *Equipment) Swap(item *Item) *Item {
 		equipment.Sword = item
 		return tmp
 	}
-	return nil
+	return tmp
 }
-func (equipment *Equipment) GetPiece(part string) *Item {
-	if part == "head" {
-		return equipment.Head
-	} else if part == "armor" {
-		return equipment.Armor
-	} else if part == "boots" {
-		return equipment.Boots
-	} else {
-		return equipment.Sword
+
+func (player *Character) EquipItem(item *Item) bool {
+	utils.UPrint(fmt.Sprintf("Do you want to wear %v ?", item.Name), 20)
+	fmt.Print("\n\n")
+	utils.UPrint("1 // Yes!", 20)
+
+	if ans := GetInputInt(1, []int{}, ""); ans == 0 {
+		return false
+	}
+	prev := player.Equipment.Equip(item)
+	player.ApplyBuff(prev, item)
+	player.Inventory.RemoveFromInventory(item, 1)
+	if prev != nil {
+		player.Inventory.AddToInventory(prev, 1)
 	}
 
+	utils.UPrint((ansi.Color((utils.Format("๑๑๑ EQUIPED: %v ๑๑๑", "center", 50, []string{strings.ToUpper(item.Name)})), "blue+b")), 20)
+
+	time.Sleep(1000 * time.Millisecond)
+	return true
 }
 
 func (player *Character) ApplyBuff(previous, current *Item) {
 	// REMOVE BUFFS FROM PREVIOUS ARMOR:
 	if previous != nil {
 		player.Stats.Max_hp -= previous.Effect["HP"].(int)
-		player.Stats.Atk += previous.Effect["Atk"].(int)
+		player.Stats.Atk -= previous.Effect["Atk"].(int)
 	}
 	if current != nil {
-		player.Stats.Max_hp += previous.Effect["HP"].(int)
-		player.Stats.Atk += previous.Effect["Atk"].(int)
+		player.Stats.Max_hp += current.Effect["HP"].(int)
+		player.Stats.Atk += current.Effect["Atk"].(int)
 	}
 }
 
-func EquipmentToMap() map[string]*Item {
-	var newmap map[string]*Item = map[string]*Item{
-		"Head":  P1.Equipment.Head,
-		"Armor": P1.Equipment.Armor,
-		"Boots": P1.Equipment.Boots,
-		"Sword": P1.Equipment.Boots,
-	}
-	return newmap
+func EquipmentToArr() []*Item {
+	return []*Item{P1.Equipment.Head, P1.Equipment.Armor, P1.Equipment.Boots, P1.Equipment.Boots}
 }

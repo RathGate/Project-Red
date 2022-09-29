@@ -50,6 +50,7 @@ func (inventory *Inventory) UseItem(item *Item, target *Enemy, environ string) b
 		// If in battle:
 		if environ == "delayed" {
 			utils.UPrint(fmt.Sprintf("%v restores %vHP of %v !\n", item.Name, int((item.Effect["damage"].(float64))*float64(P1.Stats.Max_hp)), P1.Name), 20)
+			fmt.Println()
 			return true
 		}
 		// Else:
@@ -57,16 +58,34 @@ func (inventory *Inventory) UseItem(item *Item, target *Enemy, environ string) b
 		fmt.Println()
 		fmt.Printf("Previous HP: %v/%v\nCurrent HP: %v/%v\n", prev, P1.Stats.Max_hp, P1.Stats.Curr_hp, P1.Stats.Max_hp)
 
-	case "spell":
-		switch item.Effect["type"] {
-		case "status":
-			for i := item.Effect["time"].(int); i > 0 && !target.IsDead(); i-- {
-				time.Sleep(1 * time.Second)
-				target.Stats.Curr_hp -= 1
-				fmt.Printf("%v/%v\n", target.Stats.Curr_hp, target.Stats.Max_hp)
+	case "poison":
+		if environ == "battle" {
+			DelayedAction = map[string]interface{}{"type": "item", "item": item}
+			TurnEnded = true
+			return true
+		} else {
+			utils.UPrint("Something is going wrong...\n", 100)
+			fmt.Println()
+			if environ == "" {
+				utils.UPrint((ansi.Color((utils.Format("๑๑๑ USED: %v ๑๑๑\n", "center", 50, []string{item.Name})), "red+b")), 20)
+				fmt.Println()
 			}
+			damage := int(float64(P1.Stats.Max_hp) * item.Effect["damage"].(float64))
+			for i := item.Effect["time"].(int); i > 0; i-- {
+				time.Sleep(1 * time.Second)
+				P1.Stats.Curr_hp -= damage
+
+				if P1.Stats.Curr_hp < 1 {
+					P1.Stats.Curr_hp = 1
+				}
+				fmt.Printf("   → %v HP: %v/%v\n", P1.Name, P1.Stats.Curr_hp, P1.Stats.Max_hp)
+				if P1.Stats.Curr_hp == 1 {
+					break
+				}
+			}
+			fmt.Println()
+			utils.UPrint((ansi.Color((utils.Format("%v recovered from the poison !\n", "center", 50, []string{P1.Name})), "green+b")), 20)
 		}
-		utils.UPrint((ansi.Color((utils.Format("๑๑๑ SELECTED: %v ๑๑๑", "center", 50, []string{item.Name})), "yellow+b")), 20)
 
 	case "book":
 		// SPELLBOOK:
