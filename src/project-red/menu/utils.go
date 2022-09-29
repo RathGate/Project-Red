@@ -8,6 +8,7 @@ import (
 	"os"
 	"projectRed/utils"
 	"regexp"
+	"strings"
 	"time"
 
 	"github.com/mgutz/ansi"
@@ -78,23 +79,23 @@ func GetInputStr(inputType string) string {
 		if _, err := fmt.Fscanln(stdin, &answer); err != nil {
 			DiscardBuffer(stdin)
 			fmt.Println()
-			fmt.Print("I'm afraid my old ears will have you repeat it again...\n")
-			time.Sleep(1500 * time.Millisecond)
+			utils.UPrint(ansi.Color(`"I'm afraid my old ears will have you repeat it again..."`+"\n", "yellow"), 60)
+			time.Sleep(500 * time.Millisecond)
 			continue
 		}
 		if inputType == "name" && !regexp.MustCompile(`^([a-zA-Z]{2,10})$`).MatchString(answer) {
 			DiscardBuffer(stdin)
 			fmt.Println()
-			fmt.Println(`"I'm afraid my old ears will have you repeat it again..."`)
-			time.Sleep(1500 * time.Millisecond)
+			utils.UPrint(ansi.Color(`"I'm afraid my old ears will have you repeat it again..."`+"\n", "yellow"), 60)
+			time.Sleep(500 * time.Millisecond)
 			fmt.Println("[Not a valid name! (2-10 characters, letters only)]")
 			continue
 		}
-		if inputType == "class" && !slices.Contains([]string{"Human", "Elf", "Dwarf"}, answer) {
+		if inputType == "class" && !slices.Contains([]string{"human", "elf", "dwarf"}, strings.ToLower(answer)) {
 			fmt.Println()
 			DiscardBuffer(stdin)
-			fmt.Println(`"I'm afraid my old ears will have you repeat it again..."`)
-			time.Sleep(1500 * time.Millisecond)
+			utils.UPrint(ansi.Color(`"I'm afraid my old ears will have you repeat it again..."`+"\n", "yellow"), 60)
+			time.Sleep(500 * time.Millisecond)
 			fmt.Print("[Not a valid class! ('Human' / 'Elf' / 'Dwarf')]\n")
 			continue
 		}
@@ -133,13 +134,13 @@ func PrintInfo(char *Character) {
 }
 
 // USED TO FIND AN ITEM IN AN INVENTORY BASED ON ITS NAME:
-func RetrieveItemByName(name string, inventory Inventory) (i *Item) {
+func RetrieveItemByName(name string, inventory Inventory) (*Item, bool) {
 	for item := range inventory.Items {
 		if name == item.Name {
-			return item
+			return item, true
 		}
 	}
-	return i
+	return &Item{}, false
 }
 func RetrieveSkillByName(name string, player *Character) (Skill, bool) {
 	var s Skill

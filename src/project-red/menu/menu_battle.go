@@ -70,7 +70,8 @@ func (player *Character) RegisterPlayerAction(turn int, enemy *Enemy) {
 				continue
 			}
 
-			RetrieveItemByName(battleItems[input-1].Name, player.Inventory).ItemMenu(1, &player.Inventory, "battle")
+			item, _ := RetrieveItemByName(battleItems[input-1].Name, player.Inventory)
+			item.ItemMenu(1, &player.Inventory, "battle")
 			continue
 		default:
 			fmt.Println(ansi.Color(utils.Format("● ● ● ●| R U N  A W A Y |● ● ● ●", "center", 50, []string{}), "yellow"))
@@ -89,10 +90,11 @@ func PlayerTurn(turn int, player *Character, enemy *Enemy) int {
 	switch DelayedAction["type"] {
 	case "attack":
 		utils.UPrint(fmt.Sprintf("%v uses Attack against %v !\n", player.Name, enemy.Name), 20)
-		time.Sleep(500 * time.Millisecond)
+		time.Sleep(250 * time.Millisecond)
 		inflicted := player.Stats.Atk
 		if IsCritical(20) {
-			utils.UPrint(ansi.Color("Critical hit !!\n\n", "red+b"), 20)
+			utils.UPrint(ansi.Color("Critical hit !!\n", "red+b"), 20)
+			time.Sleep(250 * time.Millisecond)
 			inflicted *= 2
 		}
 		enemy.Stats.Curr_hp -= inflicted
@@ -116,8 +118,15 @@ func PlayerTurn(turn int, player *Character, enemy *Enemy) int {
 		}
 		utils.UPrint(player.Name+" didn't make it to the exit...\n\n", 20)
 	}
+	time.Sleep(250 * time.Millisecond)
 
-	if player.IsDead() || enemy.IsDead() {
+	if player.IsDead() {
+		utils.UPrint(ansi.Color(utils.Format(player.Name+" has fainted !\n", "center", 50, []string{}), "red+b"), 20)
+		if !player.IsRevived() {
+			return 1
+		}
+	} else if enemy.IsDead() {
+		utils.UPrint(ansi.Color(utils.Format(enemy.Name+" has fainted !\n", "center", 50, []string{}), "white+b"), 20)
 		return 1
 	}
 	return 0
@@ -127,5 +136,20 @@ func IsCritical(max int) bool {
 	// rand.Seed(time.Now().UnixNano())
 
 	// return 1+rand.Intn(max-1) == 1
-	return true
+	return false
+}
+
+func GetBattleResults(turn int, player *Character, enemy *Enemy) {
+	won := player.Stats.Curr_hp >= 1
+	time.Sleep(250 * time.Millisecond)
+	if !won {
+		fmt.Println("Lost !")
+	} else {
+		utils.UPrint(ansi.Color(fmt.Sprintf("%v WINS THE BATTLE !\n", strings.ToUpper(player.Name)), "cyan+b"), 20)
+		time.Sleep(250 * time.Millisecond)
+		utils.UPrint(fmt.Sprintf("%v gets %v ₽ and %v exp !\n", player.Name, enemy.Money, enemy.Exp), 20)
+		time.Sleep(250 * time.Millisecond)
+		// GET LEVEL
+	}
+	_ = GetInputInt(0, []int{}, "")
 }

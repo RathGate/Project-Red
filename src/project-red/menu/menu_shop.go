@@ -45,10 +45,10 @@ func (shop *ShopKeeper) BuyMenu() {
 			// Prints shopkeeper's dialogue & player money
 		} else {
 			if firstBuy {
-				utils.NPCLines(`"Here's what I have for you!"`, "magenta+b")
+				utils.NPCLines(`"Here's what I have for you!"`, "magenta+b", 20)
 				firstBuy = false
 			} else {
-				utils.NPCLines(`"Do you need something else ?"`, "magenta+b")
+				utils.NPCLines(`"Do you need something else ?"`, "magenta+b", 20)
 			}
 			fmt.Println("\n" + utils.Format("Money: %v ₽", "right", 50, []string{strconv.Itoa(P1.Inventory.Money)}))
 
@@ -81,19 +81,19 @@ func (shop *ShopKeeper) SelectShopItem(item *Item, max int) {
 	var count int = 1
 	// If more than 1 item in shop, asks for amount needed:
 	if max > 1 {
-		utils.NPCLines(fmt.Sprintf(`"%v ? I have %v of them, %v ₽ each."`, item.Name, max, item.Price), "magenta+b")
-		utils.NPCLines(`How many do you need ?"`+"\n", "magenta+b")
+		utils.NPCLines(fmt.Sprintf(`"%v ? I have %v of them, %v ₽ each."`, item.Name, max, item.Price), "magenta+b", 20)
+		utils.NPCLines(`How many do you need ?"`+"\n", "magenta+b", 20)
 		fmt.Println(utils.Format("Money: %v ₽", "right", 50, []string{strconv.Itoa(P1.Inventory.Money)}))
 		count = GetInputInt(max, []int{}, "")
 	}
 
 	// Dialogue for more than 1 item:
 	if count > 1 {
-		utils.NPCLines(fmt.Sprintf("So it'll be %v ₽ for those %v %vs, please.\n", (item.Price*count), count, item.Name), "magenta+b")
+		utils.NPCLines(fmt.Sprintf("So it'll be %v ₽ for those %v %vs, please.\n", (item.Price*count), count, item.Name), "magenta+b", 20)
 
 		// Dialogue for 1 item:
 	} else {
-		utils.NPCLines(fmt.Sprintf("This %v will cost you %v ₽, please.\n", item.Name, item.Price), "magenta+b")
+		utils.NPCLines(fmt.Sprintf("This %v will cost you %v ₽, please.\n", item.Name, item.Price), "magenta+b", 20)
 	}
 
 	// Prints money, user choices and asks for input:
@@ -114,11 +114,11 @@ func (shop *ShopKeeper) BuyItem(item *Item, count int) {
 
 	// Check if the P1 has enough money to buy:
 	if (item.Price * count) > P1.Inventory.Money {
-		utils.NPCLines(`"Hey, don't buy if you can't pay !`+"\n", "magenta+b")
+		utils.NPCLines(`"Hey, don't buy if you can't pay !`+"\n", "magenta+b", 20)
 
 		// Checks if the P1 has enough room in the bag to buy:
 	} else if invFull, invCount := P1.Inventory.IsFull(); invFull || invCount+count > 10 {
-		utils.NPCLines(`"It seems your bag is too heavy to buy this...`+"\n", "magenta+b")
+		utils.NPCLines(`"It seems your bag is too heavy to buy this...`+"\n", "magenta+b", 20)
 
 		// Buys the item:
 	} else {
@@ -128,7 +128,7 @@ func (shop *ShopKeeper) BuyItem(item *Item, count int) {
 		P1.Inventory.AddToInventory(item, count)
 		shop.Inventory.RemoveFromInventory(item, count)
 		fmt.Printf("------ BOUGHT %v %v FROM %v ------\n\n", count, strings.ToUpper(item.Name), strings.ToUpper(shop.Name))
-		utils.NPCLines(`It's always a pleasure doing business with you!"`+"\n", "magenta+b")
+		utils.NPCLines(`It's always a pleasure doing business with you!"`+"\n", "magenta+b", 20)
 	}
 	time.Sleep(1500 * time.Millisecond)
 }

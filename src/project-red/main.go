@@ -10,11 +10,11 @@ var GameEnded bool = false
 
 func main() {
 	// Utilisation du package menu:
-	Player.Init()
+	Player.CharacterCreation()
 
 	var Goblin = &menu.Goblin
 
-	Goblin.InitEnemy("Goblin", 40, 40, 5)
+	Goblin.InitEnemy("Goblin", 40, 40, 40)
 
 	for !GameEnded {
 		menu.OpenMenu()

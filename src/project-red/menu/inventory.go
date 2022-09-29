@@ -32,7 +32,7 @@ func (inventory *Inventory) AddToInventory(item *Item, count int) {
 }
 
 func (inv *Inventory) RemoveFromInventory(item *Item, count int) bool {
-	item = RetrieveItemByName(item.Name, *inv)
+	item, _ = RetrieveItemByName(item.Name, *inv)
 
 	// Deletes [count] of [item] from the inventory.
 	inv.Items[item] -= count

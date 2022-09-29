@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"projectRed/utils"
+	"strconv"
 	"time"
 
 	"github.com/mgutz/ansi"
@@ -66,16 +67,17 @@ func (inventory *Inventory) DiscardItem(item *Item, count int) bool {
 	if answer == 0 {
 		return false
 	}
-	fmt.Printf("You're about to throw %v %v away.\n", answer, item.Name)
+	fmt.Printf("You're about to throw %v %vaway.\n", answer, item.Name)
 	fmt.Print("Are you sure ?\n" + "\n")
 	fmt.Print("1 // Ok !")
 	confirm := GetInputInt(1, []int{}, "")
 
 	if confirm == 1 {
+		utils.UPrint((ansi.Color((utils.Format("๑๑๑ DISCARDED: %v (x%v) ๑๑๑\n", "center", 50, []string{item.Name, strconv.Itoa(answer)})), "red+b")), 20)
 		if inventory.RemoveFromInventory(item, answer) {
-			utils.UPrint(fmt.Sprintf("There's no more %v in the inventory...", item.Name), 5)
+			utils.UPrint(fmt.Sprintf("\nThere's no more %v in the inventory...\n", item.Name), 20)
 		} else {
-			utils.UPrint(fmt.Sprintf("Successfully discarded %v %vs from the inventory.", answer, item.Name), 5)
+			utils.UPrint(fmt.Sprintf("\n%v %v are still in the inventory !\n", strconv.Itoa(count-answer), item.Name), 20)
 		}
 		_ = GetInputInt(0, []int{}, "")
 		return true

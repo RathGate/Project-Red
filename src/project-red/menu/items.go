@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"projectRed/utils"
 	"time"
+
+	"github.com/mgutz/ansi"
 )
 
 type Item struct {
@@ -21,6 +23,7 @@ func (inventory *Inventory) UseItem(item *Item, target *Enemy, environ string) b
 	switch item.Type {
 
 	case "heal":
+
 		if P1.Stats.Curr_hp == P1.Stats.Max_hp {
 			fmt.Println("There's no need to take this right now...")
 			time.Sleep(2 * time.Second)
@@ -42,9 +45,10 @@ func (inventory *Inventory) UseItem(item *Item, target *Enemy, environ string) b
 		if environ == "delayed" {
 			utils.UPrint(fmt.Sprintf("%v restores %vHP of %v !\n", item.Name, int((item.Effect["damage"].(float64))*float64(P1.Stats.Max_hp)), P1.Name), 20)
 			return true
-		} else {
-			fmt.Printf("Previous HP: %v/%v\nCurrent HP: %v/%v\n", prev, P1.Stats.Max_hp, P1.Stats.Curr_hp, P1.Stats.Max_hp)
 		}
+		utils.UPrint((ansi.Color((utils.Format("๑๑๑ USED: %v ๑๑๑\n", "center", 50, []string{item.Name})), "yellow+b")), 20)
+		fmt.Println()
+		fmt.Printf("Previous HP: %v/%v\nCurrent HP: %v/%v\n", prev, P1.Stats.Max_hp, P1.Stats.Curr_hp, P1.Stats.Max_hp)
 
 	case "spell":
 		switch item.Effect["type"] {
@@ -55,6 +59,7 @@ func (inventory *Inventory) UseItem(item *Item, target *Enemy, environ string) b
 				fmt.Printf("%v/%v\n", target.Stats.Curr_hp, target.Stats.Max_hp)
 			}
 		}
+		utils.UPrint((ansi.Color((utils.Format("๑๑๑ SELECTED: %v ๑๑๑", "center", 50, []string{item.Name})), "yellow+b")), 20)
 
 	case "book":
 
@@ -63,7 +68,9 @@ func (inventory *Inventory) UseItem(item *Item, target *Enemy, environ string) b
 				fmt.Printf("You already know that skill...\n\n")
 				return false
 			} else {
-				fmt.Printf("You learned to use %v !\n", item.Effect["learn"].(Skill).Name)
+				utils.UPrint((ansi.Color((utils.Format("๑๑๑ USED: %v ๑๑๑\n", "center", 50, []string{item.Name})), "yellow+b")), 20)
+
+				fmt.Printf("\nYou learned to use %v !\n", item.Effect["learn"].(Skill).Name)
 				P1.Skills = append(P1.Skills, (item.Effect["learn"].(Skill)))
 			}
 
@@ -73,7 +80,8 @@ func (inventory *Inventory) UseItem(item *Item, target *Enemy, environ string) b
 				return false
 			}
 			inventory.UpgradeInventorySlot()
-			fmt.Printf("Your bag is bigger now ! It can hold up to %v items !\n", inventory.Capacity)
+			utils.UPrint((ansi.Color((utils.Format("๑๑๑ USED: %v ๑๑๑\n", "center", 50, []string{item.Name})), "yellow+b")), 20)
+			fmt.Printf("\nYour bag is bigger now ! It can hold up to %v items !\n", inventory.Capacity)
 		}
 
 	}

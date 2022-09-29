@@ -10,7 +10,14 @@ var Potion = Item{
 	Type:        "heal",
 	BattleUse:   true,
 	Effect:      map[string]interface{}{"damage": 0.33},
-	Price:       50,
+	Price:       10,
+}
+var FairyBottle = Item{
+	Name:        "Fairy Bottle",
+	Description: `"A small light dances inside the bottle..."` + "\n" + `"What could be the use of it ?"`,
+	Category:    "item",
+	Type:        "unknown",
+	BattleUse:   false,
 }
 var PoisonPotion = Item{
 	Name:        "Poison Potion",
@@ -19,7 +26,7 @@ var PoisonPotion = Item{
 	Type:        "spell",
 	BattleUse:   true,
 	Effect:      map[string]interface{}{"type": "status", "time": 0, "damage": 3, "element": "poison"},
-	Price:       50,
+	Price:       15,
 }
 var Iceball = Skill{
 	Name:        "Iceball",
@@ -67,6 +74,7 @@ var OrganiserGuide = Item{
 	Category:    "item",
 	Type:        "book",
 	Effect:      map[string]interface{}{"type": "expand"},
+	Price:       30,
 }
 var ShopDude = ShopKeeper{
 	NPC{

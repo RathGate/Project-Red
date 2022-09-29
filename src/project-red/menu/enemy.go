@@ -16,6 +16,8 @@ type Enemy struct {
 	Name  string
 	Stats Stats
 	Loot  *Item
+	Money int
+	Exp   int
 }
 
 func (enemy *Enemy) InitEnemy(name string, curr_hp, max_hp, akt int) {
@@ -25,11 +27,13 @@ func (enemy *Enemy) InitEnemy(name string, curr_hp, max_hp, akt int) {
 	enemy.Stats.Atk = akt
 	enemy.Loot = &PoisonPotion
 	enemy.Stats.Initiative = 10
+	enemy.Exp = 15
+	enemy.Money = 40
 }
 
 func TrainingFight(player *Character, enemy *Enemy) {
-
-	for turn := 1; turn < 5; turn++ {
+	var turn int = 1
+	for ; turn < 5 && !player.IsDead() && !enemy.IsDead(); turn++ {
 		player.RegisterPlayerAction(turn, enemy)
 		utils.ConsoleClear()
 		BattleIntroduction(*player, *enemy)
@@ -46,22 +50,40 @@ func TrainingFight(player *Character, enemy *Enemy) {
 		PrintBattleInfo(*player, *enemy)
 
 		if enemy.Stats.Initiative <= player.Stats.Initiative || DelayedAction["type"] == "run" {
-			switch PlayerTurn(turn, player, enemy) {
-			case -1:
-				_ = GetInputInt(0, []int{}, "")
+			if outcome := PlayerTurn(turn, player, enemy); outcome == -1 {
 				return
-			case 1:
-				break
+			} else if outcome == 1 {
+				time.Sleep(1500 * time.Millisecond)
+				_ = GetInputInt(0, []int{}, "")
+				continue
 			}
-			fmt.Println(enemy.Stats.Initiative)
+			PrintBattleInfo(*player, *enemy)
+			time.Sleep(time.Second)
+			if outcome := enemy.EnemyTurn(turn, player); outcome == 1 {
+				time.Sleep(1500 * time.Millisecond)
+				_ = GetInputInt(0, []int{}, "")
+				continue
+			}
 		} else {
-			fmt.Println(enemy.Stats.Initiative)
-			PlayerTurn(turn, player, enemy)
+			if outcome := enemy.EnemyTurn(turn, player); outcome == 1 {
+				time.Sleep(1500 * time.Millisecond)
+				_ = GetInputInt(0, []int{}, "")
+				continue
+			}
+			PrintBattleInfo(*player, *enemy)
+			time.Sleep(time.Second)
+
+			if outcome := PlayerTurn(turn, player, enemy); outcome == -1 {
+				return
+			} else if outcome == 1 {
+				time.Sleep(1500 * time.Millisecond)
+				_ = GetInputInt(0, []int{}, "")
+				continue
+			}
 		}
 		_ = GetInputInt(0, []int{}, "next")
 	}
-	fmt.Println("hello?")
-	_ = GetInputInt(0, []int{}, "")
+	GetBattleResults(turn, player, enemy)
 }
 
 func PrintBattleInfo(player Character, enemy Enemy) {
@@ -83,18 +105,29 @@ func BattleIntroduction(player Character, enemy Enemy) {
 		fmt.Println(utils.Format("It seems to carry something interesting..."+"\n", "center", 50, []string{}))
 	}
 }
-func (enemy *Enemy) EnemyPattern(player *Character) int {
-	// for i := 1; i < 3; i++ {
-	// 	damage := enemy.Akt
-	// 	if i%3 == 0 {
-	// 		damage = enemy.Akt * 2
-	// 		fmt.Print("Critical hit ! ")
-	// 	}
-	// 	player.Curr_hp -= damage
-	// 	fmt.Printf("%v deals %vHP damage to %v !\n", enemy.Name, damage, player.Name)
-	// 	fmt.Println(player.Curr_hp)
-	// }
-	return 69
+func (enemy *Enemy) EnemyTurn(turn int, player *Character) int {
+	utils.UPrint(fmt.Sprintf("%v uses Attack against %v !\n", enemy.Name, player.Name), 20)
+	time.Sleep(250 * time.Millisecond)
+	inflicted := enemy.Stats.Atk
+	if turn%3 == 0 {
+		utils.UPrint(ansi.Color("Critical hit !!\n", "red+b"), 20)
+		time.Sleep(250 * time.Millisecond)
+		inflicted *= 2
+	}
+	player.Stats.Curr_hp -= inflicted
+
+	utils.UPrint(fmt.Sprintf("%v inflicted %v dmg to %v !\n\n", enemy.Name, inflicted, player.Name), 20)
+
+	if player.IsDead() {
+		utils.UPrint(ansi.Color(utils.Format(player.Name+" has fainted !\n", "center", 50, []string{}), "red+b"), 20)
+		if !player.IsRevived() {
+			return 1
+		}
+	} else if enemy.IsDead() {
+		utils.UPrint(ansi.Color(utils.Format(enemy.Name+" has fainted !\n", "center", 50, []string{}), "white+b"), 20)
+		return 1
+	}
+	return 0
 }
 
 func (inventory *Inventory) GetBattleItems() []*Item {

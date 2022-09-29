@@ -73,6 +73,6 @@ func PrintMenuOpt(options []string) {
 	}
 }
 
-func NPCLines(str string, color string) {
-	UPrint(ansi.Color(Format(str, "center", 50, []string{})+"\n", color), 20)
+func NPCLines(str string, color string, speed int) {
+	UPrint(ansi.Color(Format(str, "center", 50, []string{})+"\n", color), speed)
 }
