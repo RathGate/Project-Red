@@ -16,7 +16,8 @@ func main() {
 
 	Goblin.InitEnemy("Goblin", 40, 40, 40)
 
-	for !GameEnded {
-		menu.OpenMenu()
-	}
+	// for !GameEnded {
+	Player.LevelUp()
+	// 	menu.OpenMenu()
+	// }
 }

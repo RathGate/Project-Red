@@ -142,6 +142,8 @@ func RetrieveItemByName(name string, inventory Inventory) (*Item, bool) {
 	}
 	return &Item{}, false
 }
+
+// USED TO FIND A SKILL IN AN INVENTORY BASED ON ITS NAME:
 func RetrieveSkillByName(name string, player *Character) (Skill, bool) {
 	var s Skill
 	for _, skill := range player.Skills {

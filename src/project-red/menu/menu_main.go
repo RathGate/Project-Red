@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"projectRed/utils"
-	"strconv"
 	"time"
 
 	"github.com/mgutz/ansi"
@@ -55,32 +54,4 @@ func WhoAreThey() {
 	utils.UPrint(fmt.Sprintln("We did ! "+ansi.Color("Steven Spielberg", "yellow+b")+" and "+ansi.Color("ABBA", "yellow+b")+" were hidden in\nthe powerpoint..."), 20)
 	Discovered = true
 	_ = GetInputInt(0, []int{}, "")
-}
-
-func (inventory *Inventory) DiscardItem(item *Item, count int) bool {
-	answer := count
-
-	if count > 1 {
-		fmt.Printf("How many %v do you wanna throw away ? (max %v)\n", item.Name, count)
-		answer = GetInputInt(count, []int{}, "")
-	}
-	if answer == 0 {
-		return false
-	}
-	fmt.Printf("You're about to throw %v %vaway.\n", answer, item.Name)
-	fmt.Print("Are you sure ?\n" + "\n")
-	fmt.Print("1 // Ok !")
-	confirm := GetInputInt(1, []int{}, "")
-
-	if confirm == 1 {
-		utils.UPrint((ansi.Color((utils.Format("๑๑๑ DISCARDED: %v (x%v) ๑๑๑\n", "center", 50, []string{item.Name, strconv.Itoa(answer)})), "red+b")), 20)
-		if inventory.RemoveFromInventory(item, answer) {
-			utils.UPrint(fmt.Sprintf("\nThere's no more %v in the inventory...\n", item.Name), 20)
-		} else {
-			utils.UPrint(fmt.Sprintf("\n%v %v are still in the inventory !\n", strconv.Itoa(count-answer), item.Name), 20)
-		}
-		_ = GetInputInt(0, []int{}, "")
-		return true
-	}
-	return false
 }

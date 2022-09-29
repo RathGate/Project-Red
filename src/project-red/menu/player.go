@@ -60,32 +60,32 @@ func (player *Character) Init(name, class string, atk int, items map[*Item]int, 
 
 func (player *Character) CharacterCreation() {
 	utils.ConsoleClear()
-	utils.UPrint(ansi.Color(`"Hello, stranger...`+"\n", "yellow"), 60)
-	time.Sleep(500 * time.Millisecond)
-	utils.UPrint(ansi.Color(`"Not a lot of lost souls come wandering down here...`+"\n", "yellow"), 60)
+	// utils.UPrint(ansi.Color(`"Hello, stranger...`+"\n", "yellow"), 60)
+	// time.Sleep(500 * time.Millisecond)
+	// utils.UPrint(ansi.Color(`"Not a lot of lost souls come wandering down here...`+"\n", "yellow"), 60)
 
-	time.Sleep(500 * time.Millisecond)
-	utils.UPrint(ansi.Color("Tell me... ", "yellow"), 60)
+	// time.Sleep(500 * time.Millisecond)
+	// utils.UPrint(ansi.Color("Tell me... ", "yellow"), 60)
 
-	time.Sleep(300 * time.Millisecond)
-	utils.UPrint(ansi.Color(`What's your name ?"`+"\n", "yellow"), 60)
+	// time.Sleep(300 * time.Millisecond)
+	// utils.UPrint(ansi.Color(`What's your name ?"`+"\n", "yellow"), 60)
 
-	playerName := GetInputStr("name")
-	utils.UPrint(ansi.Color(`"My eyes can't see anymore...`, "yellow"), 60)
-	time.Sleep(500 * time.Millisecond)
-	utils.UPrint(ansi.Color(" Are you\n", "yellow"), 60)
-	time.Sleep(200 * time.Millisecond)
-	utils.UPrint(ansi.Color(`a 'Human' ? `, "yellow"), 60)
-	time.Sleep(200 * time.Millisecond)
-	utils.UPrint(ansi.Color(`An 'Elf' ? `, "yellow"), 60)
-	time.Sleep(200 * time.Millisecond)
-	utils.UPrint(ansi.Color(`Or maybe a 'Dwarf'?"`+"\n", "yellow"), 60)
+	// playerName := GetInputStr("name")
+	// utils.UPrint(ansi.Color(`"My eyes can't see anymore...`, "yellow"), 60)
+	// time.Sleep(500 * time.Millisecond)
+	// utils.UPrint(ansi.Color(" Are you\n", "yellow"), 60)
+	// time.Sleep(200 * time.Millisecond)
+	// utils.UPrint(ansi.Color(`a 'Human' ? `, "yellow"), 60)
+	// time.Sleep(200 * time.Millisecond)
+	// utils.UPrint(ansi.Color(`An 'Elf' ? `, "yellow"), 60)
+	// time.Sleep(200 * time.Millisecond)
+	// utils.UPrint(ansi.Color(`Or maybe a 'Dwarf'?"`+"\n", "yellow"), 60)
 
-	playerClass := GetInputStr("class")
-	// player.Name = "moncul"
-	// player.Class = "Elf"
+	// playerClass := GetInputStr("class")
+	playerName := "moncul"
+	playerClass := "Elf"
 
-	player.Init(playerName, playerClass, 10, map[*Item]int{&Potion: 3}, 100, []Skill{Punch})
+	player.Init(playerName, playerClass, 10, map[*Item]int{&Potion: 3, &FairyBottle: 1}, 100, []Skill{Punch})
 	P1 = *player
 
 	utils.UPrint(ansi.Color(`"I see. Take this. `, "yellow"), 60)
@@ -98,7 +98,7 @@ func (player *Character) CharacterCreation() {
 	time.Sleep(500 * time.Millisecond)
 	_ = GetInputInt(0, []int{}, "next")
 
-	utils.UPrint((ansi.Color((utils.Format("๑๑๑ RECEIVED: a Fairy Bottle ๑๑๑\n", "center", 50, []string{})), "white+b")), 20)
+	utils.UPrint((ansi.Color((utils.Format("๑๑๑ RECEIVED: Fairy Bottle ๑๑๑\n", "center", 50, []string{})), "white+b")), 20)
 
 	time.Sleep(1000 * time.Millisecond)
 	fmt.Println()
@@ -124,10 +124,14 @@ func (char *Character) IsDead() bool {
 func (char *Character) IsRevived() bool {
 
 	item, hasItem := RetrieveItemByName("Fairy Bottle", char.Inventory)
-
+	// IF NO FAIRY IN INVENTORY: GAME OVER
 	if !hasItem {
 		return false
 	}
+
+	// ELSE:
+
+	// Revive message:
 	time.Sleep(1500 * time.Millisecond)
 	_ = GetInputInt(0, []int{}, "")
 	time.Sleep(1500 * time.Millisecond)
@@ -136,6 +140,7 @@ func (char *Character) IsRevived() bool {
 	utils.UPrint(ansi.Color((utils.Format(`"Come on, wake up %v ! Wake up !"`, "", 50, []string{char.Name})+"\n\n"), "green+b"), 40)
 	time.Sleep(time.Second)
 
+	// Replenishes life:
 	char.Stats.Curr_hp = char.Stats.Max_hp / 2
 	char.Inventory.RemoveFromInventory(item, 1)
 
