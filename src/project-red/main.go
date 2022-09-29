@@ -4,20 +4,16 @@ import (
 	"projectRed/menu"
 )
 
+var Goblin = &menu.Goblin
 var Player menu.Character = menu.P1
 var ShopKeeper = menu.ShopDude
 var GameEnded bool = false
 
 func main() {
-	// Utilisation du package menu:
+	// Init. of the Goblin and the player
 	Player.CharacterCreation()
-
-	var Goblin = &menu.Goblin
-
-	Goblin.InitEnemy("Goblin", 40, 40, 40)
-
-	// for !GameEnded {
-	Player.LevelUp()
-	// 	menu.OpenMenu()
-	// }
+	Goblin.InitEnemy("Goblin", 10, 40, 10)
+	for !GameEnded {
+		menu.OpenMenu()
+	}
 }

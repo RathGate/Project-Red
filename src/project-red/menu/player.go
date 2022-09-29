@@ -17,6 +17,7 @@ type Character struct {
 	Skills    []Skill
 	Inventory Inventory
 	Stats     Stats
+	Equipment Equipment
 }
 
 type Stats struct {
@@ -31,6 +32,13 @@ type Stats struct {
 	Atk        int
 }
 
+func (stats *Stats) Revert() {
+	if stats.Curr_hp == 0 {
+		stats.Curr_hp = stats.Max_hp / 2
+	}
+	stats.Curr_sp = stats.Max_exp
+}
+
 func (player *Character) Init(name, class string, atk int, items map[*Item]int, money int, skills []Skill) {
 	// BASE CHARACTERISTICS:
 	player.Name = name
@@ -43,7 +51,7 @@ func (player *Character) Init(name, class string, atk int, items map[*Item]int, 
 	// STATS:
 	player.Stats.Level = 1
 	player.Stats.Exp = 0
-	player.Stats.Max_exp = 30
+	player.Stats.Max_exp = 24
 	switch class {
 	case "Human":
 		player.Stats.Max_hp = 100
@@ -85,24 +93,24 @@ func (player *Character) CharacterCreation() {
 	playerName := "moncul"
 	playerClass := "Elf"
 
-	player.Init(playerName, playerClass, 10, map[*Item]int{&Potion: 3, &FairyBottle: 1}, 100, []Skill{Punch})
+	player.Init(playerName, playerClass, 10, map[*Item]int{&FairyBottle: 1, &CapKnight: 1, &CapWild: 1}, 100, []Skill{Punch})
 	P1 = *player
 
-	utils.UPrint(ansi.Color(`"I see. Take this. `, "yellow"), 60)
-	time.Sleep(500 * time.Millisecond)
-	utils.UPrint(ansi.Color(`Trust me, it'll be useful.`+"\n", "yellow"), 60)
-	time.Sleep(500 * time.Millisecond)
-	utils.UPrint(ansi.Color(`Don't be shy and take it ! `, "yellow"), 80)
-	time.Sleep(500 * time.Millisecond)
-	utils.UPrint(ansi.Color(`My old bones`+"\n"+`won't have any use of it anyway."`+"\n", "yellow"), 60)
-	time.Sleep(500 * time.Millisecond)
-	_ = GetInputInt(0, []int{}, "next")
+	// utils.UPrint(ansi.Color(`"I see. Take this. `, "yellow"), 60)
+	// time.Sleep(500 * time.Millisecond)
+	// utils.UPrint(ansi.Color(`Trust me, it'll be useful.`+"\n", "yellow"), 60)
+	// time.Sleep(500 * time.Millisecond)
+	// utils.UPrint(ansi.Color(`Don't be shy and take it ! `, "yellow"), 80)
+	// time.Sleep(500 * time.Millisecond)
+	// utils.UPrint(ansi.Color(`My old bones`+"\n"+`won't have any use of it anyway."`+"\n", "yellow"), 60)
+	// time.Sleep(500 * time.Millisecond)
+	// _ = GetInputInt(0, []int{}, "next")
 
-	utils.UPrint((ansi.Color((utils.Format("๑๑๑ RECEIVED: Fairy Bottle ๑๑๑\n", "center", 50, []string{})), "white+b")), 20)
+	// utils.UPrint((ansi.Color((utils.Format("๑๑๑ RECEIVED: Fairy Bottle ๑๑๑\n", "center", 50, []string{})), "white+b")), 20)
 
-	time.Sleep(1000 * time.Millisecond)
-	fmt.Println()
-	utils.UPrint(ansi.Color(`Good Luck on your journey, young one !"`+"\n", "yellow"), 60)
+	// time.Sleep(1000 * time.Millisecond)
+	// fmt.Println()
+	// utils.UPrint(ansi.Color(`Good Luck on your journey, young one !"`+"\n", "yellow"), 60)
 	_ = GetInputInt(0, []int{}, "next")
 
 	time.Sleep(1000 * time.Millisecond)

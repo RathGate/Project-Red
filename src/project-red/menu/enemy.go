@@ -15,7 +15,7 @@ func (enemy *Enemy) InitEnemy(name string, curr_hp, max_hp, akt int) {
 	enemy.Stats.Atk = akt
 	enemy.Loot = &PoisonPotion
 	enemy.Stats.Initiative = 10
-	enemy.Exp = 15
+	enemy.Exp = 25
 	enemy.Money = 40
 }
 

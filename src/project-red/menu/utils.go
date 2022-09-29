@@ -130,6 +130,17 @@ func PrintInfo(char *Character) {
 			utils.UPrint(fmt.Sprintf("    → %v\n", skill.Name), 15)
 		}
 	}
+	fmt.Println()
+
+	fmt.Println(ansi.Color("EQUIPMENT: ", "cyan+B"))
+	for key, value := range EquipmentToMap() {
+		if value != nil {
+			utils.UPrint(fmt.Sprintf("%v: %v\n", key, value), 20)
+		} else {
+			utils.UPrint(fmt.Sprintf("%v: ///\n", key), 20)
+		}
+	}
+
 	_ = GetInputInt(0, []int{}, "")
 }
 

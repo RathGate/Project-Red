@@ -48,6 +48,9 @@ func (item *Item) ItemMenu(count int, inventory *Inventory, environ string) {
 		if item.Type == "heal" || item.Type == "book" {
 			validAns = append(validAns, 1)
 			utils.UPrint("1 // Use\n", 20)
+		} else if item.Category == "equipment" {
+			validAns = append(validAns, 1)
+			utils.UPrint("1 // Equip\n", 20)
 		}
 
 		fmt.Println("2 // Description")
@@ -61,8 +64,13 @@ func (item *Item) ItemMenu(count int, inventory *Inventory, environ string) {
 
 		switch answer {
 		case 1:
-			if inventory.UseItem(item, &Enemy{}, environ) {
-				return
+			if item.Category == "equipment" {
+				fmt.Print("bonjour")
+				P1.Equipment.Equip(item)
+			} else {
+				if inventory.UseItem(item, &Enemy{}, environ) {
+					return
+				}
 			}
 		case 2:
 			item.DisplayDescription()

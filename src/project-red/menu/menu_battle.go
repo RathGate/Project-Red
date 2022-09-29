@@ -37,22 +37,19 @@ func TrainingFight(player *Character, enemy *Enemy) {
 			if outcome := PlayerTurn(turn, player, enemy); outcome == -1 {
 				return
 			} else if outcome == 1 {
-				time.Sleep(1500 * time.Millisecond)
-				_ = GetInputInt(0, []int{}, "")
+				time.Sleep(500 * time.Millisecond)
 				continue
 			}
 			PrintBattleInfo(*player, *enemy)
 			time.Sleep(time.Second)
 			if outcome := enemy.EnemyTurn(turn, player); outcome == 1 {
-				time.Sleep(1500 * time.Millisecond)
-				_ = GetInputInt(0, []int{}, "")
+				time.Sleep(500 * time.Millisecond)
 				continue
 			}
 			// ENEMY FASTER THAN PLAYER:
 		} else {
 			if outcome := enemy.EnemyTurn(turn, player); outcome == 1 {
-				time.Sleep(1500 * time.Millisecond)
-				_ = GetInputInt(0, []int{}, "")
+				time.Sleep(500 * time.Millisecond)
 				continue
 			}
 			PrintBattleInfo(*player, *enemy)
@@ -61,8 +58,7 @@ func TrainingFight(player *Character, enemy *Enemy) {
 			if outcome := PlayerTurn(turn, player, enemy); outcome == -1 {
 				return
 			} else if outcome == 1 {
-				time.Sleep(1500 * time.Millisecond)
-				_ = GetInputInt(0, []int{}, "")
+				time.Sleep(500 * time.Millisecond)
 				continue
 			}
 		}
@@ -70,6 +66,8 @@ func TrainingFight(player *Character, enemy *Enemy) {
 		_ = GetInputInt(0, []int{}, "next")
 	}
 	GetBattleResults(turn, player, enemy)
+	Goblin.InitEnemy("Goblin", 40, 40, 40)
+	player.Stats.Revert()
 }
 
 func (player *Character) RegisterPlayerAction(turn int, enemy *Enemy) {
@@ -169,7 +167,7 @@ func PlayerTurn(turn int, player *Character, enemy *Enemy) int {
 			inflicted *= 2
 		}
 		enemy.Stats.Curr_hp -= inflicted
-		utils.UPrint(fmt.Sprintf("%v dmg inflicted to %v !\n", inflicted, enemy.Name), 20)
+		utils.UPrint(fmt.Sprintf("%v dmg inflicted to %v !\n\n", inflicted, enemy.Name), 20)
 
 	case "skill":
 		skill := DelayedAction["skill"].(Skill)
@@ -198,29 +196,16 @@ func PlayerTurn(turn int, player *Character, enemy *Enemy) int {
 	// CHECKS FOR USER'S AND ENEMY'S HP (1 means one is dead)
 	if player.IsDead() {
 		utils.UPrint(ansi.Color(utils.Format(player.Name+" has fainted !\n", "center", 50, []string{}), "red+b"), 20)
+		fmt.Println()
 		if !player.IsRevived() {
 			return 1
 		}
 	} else if enemy.IsDead() {
 		utils.UPrint(ansi.Color(utils.Format(enemy.Name+" has fainted !\n", "center", 50, []string{}), "white+b"), 20)
+		fmt.Print()
 		return 1
 	}
 	return 0
-}
-
-func GetBattleResults(turn int, player *Character, enemy *Enemy) {
-	won := player.Stats.Curr_hp >= 1
-	time.Sleep(250 * time.Millisecond)
-	if !won {
-		fmt.Println("Lost !")
-	} else {
-		utils.UPrint(ansi.Color(fmt.Sprintf("%v WINS THE BATTLE !\n", strings.ToUpper(player.Name)), "cyan+b"), 20)
-		time.Sleep(250 * time.Millisecond)
-		utils.UPrint(fmt.Sprintf("%v gets %v ₽ and %v exp !\n", player.Name, enemy.Money, enemy.Exp), 20)
-		time.Sleep(250 * time.Millisecond)
-		// GET LEVEL
-	}
-	_ = GetInputInt(0, []int{}, "")
 }
 
 // PLAYS THE ENEMY'S TURN:
@@ -236,16 +221,63 @@ func (enemy *Enemy) EnemyTurn(turn int, player *Character) int {
 	}
 	player.Stats.Curr_hp -= inflicted
 
-	utils.UPrint(fmt.Sprintf("%v inflicted %v dmg to %v !\n\n", enemy.Name, inflicted, player.Name), 20)
+	utils.UPrint(fmt.Sprintf("%v inflicted %v dmg to %v !\n", enemy.Name, inflicted, player.Name), 20)
+	fmt.Println()
 
 	if player.IsDead() {
 		utils.UPrint(ansi.Color(utils.Format(player.Name+" has fainted !\n", "center", 50, []string{}), "red+b"), 20)
+		fmt.Print()
 		if !player.IsRevived() {
 			return 1
 		}
 	} else if enemy.IsDead() {
 		utils.UPrint(ansi.Color(utils.Format(enemy.Name+" has fainted !\n", "center", 50, []string{}), "white+b"), 20)
+		fmt.Println()
 		return 1
 	}
 	return 0
+}
+
+func GetBattleResults(turn int, player *Character, enemy *Enemy) {
+	won := player.Stats.Curr_hp >= 1
+	time.Sleep(250 * time.Millisecond)
+	if !won {
+		fmt.Println()
+		utils.UPrint(ansi.Color(utils.Format("G A M E  O V E R\n", "center", 50, []string{strings.ToUpper(player.Name)}), "red+b"), 100)
+	} else {
+		fmt.Println()
+		utils.UPrint(ansi.Color(utils.Format("%v WINS THE BATTLE !\n", "center", 50, []string{strings.ToUpper(player.Name)}), "cyan+b"), 20)
+		fmt.Println()
+		time.Sleep(250 * time.Millisecond)
+		utils.UPrint(fmt.Sprintf("%v gets %v ₽ and %v exp !\n", player.Name, enemy.Money, enemy.Exp), 20)
+		time.Sleep(250 * time.Millisecond)
+
+		_ = GetInputInt(0, []int{}, "next")
+
+		player.Inventory.Money += enemy.Money
+		player.BattleReward(enemy.Exp, enemy.Loot)
+
+	}
+	_ = GetInputInt(0, []int{}, "")
+}
+func (player *Character) BattleReward(xp int, item *Item) {
+
+	// XP :::
+	player.Stats.Exp += xp
+	for player.Stats.Exp > player.Stats.Max_exp {
+		player.LevelUp()
+	}
+
+	if item != nil {
+		utils.UPrint(fmt.Sprintf("It seems the %v carried something with them...\n", player.Name), 20)
+		if full, _ := player.Inventory.IsFull(); !full {
+			time.Sleep(250 * time.Millisecond)
+			player.Inventory.AddToInventory(item, 1)
+			fmt.Println()
+			utils.UPrint((ansi.Color((utils.Format("๑๑๑ OBTAINED: %v ๑๑๑\n", "center", 50, []string{item.Name})), "white+b")), 20)
+		} else {
+			utils.UPrint("But your inventory is full, too bad !", 20)
+		}
+		time.Sleep(250 * time.Millisecond)
+	}
 }

@@ -14,7 +14,7 @@ type Item struct {
 	Description string
 	Category    string
 	Type        string
-	Price       int
+	Price       Price
 	BattleUse   bool
 	Effect      map[string]interface{}
 }
@@ -112,7 +112,7 @@ func (inventory *Inventory) DiscardItem(item *Item, count int) bool {
 	answer := count
 
 	if count > 1 {
-		fmt.Printf("How many %v do you wanna throw away ? (max %v)\n", item.Name, count)
+		utils.UPrint(fmt.Sprintf("How many %v do you wanna throw away ? (max %v)\n", item.Name, count), 20)
 		answer = GetInputInt(count, []int{}, "")
 	}
 	if answer == 0 {

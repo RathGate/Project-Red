@@ -11,12 +11,12 @@ import (
 
 func OpenMenu() {
 	utils.PrintBox(P1.Name, "M A I N  M E N U", "Green")
-	var options int = 4
+	var options int = 5
 	if !Discovered {
 		utils.PrintMenuOpt(MainMenu_Opt)
-		options = 5
+		options = 6
 	} else {
-		utils.PrintMenuOpt(MainMenu_Opt[:4])
+		utils.PrintMenuOpt(MainMenu_Opt[:5])
 	}
 
 	var answer int = GetInputInt(options, []int{}, "")
@@ -30,8 +30,10 @@ func OpenMenu() {
 	case 3:
 		ShopDude.BuyMenu()
 	case 4:
-		TrainingFight(&P1, &Goblin)
+		SmithDude.BuyMenu()
 	case 5:
+		TrainingFight(&P1, &Goblin)
+	case 6:
 		WhoAreThey()
 	case 0:
 		utils.UPrint(ansi.Color("Are you sure you wanna quit", "red+b"), 30)

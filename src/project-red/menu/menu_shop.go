@@ -9,6 +9,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/Delta456/box-cli-maker/v2"
+	"github.com/mgutz/ansi"
 )
 
 var Shop *ShopKeeper
@@ -57,7 +58,7 @@ func (shop *ShopKeeper) BuyMenu() {
 			// Prints each item to sell and asks for an input:
 			for index, element := range keys {
 				length := utf8.RuneCountInString(fmt.Sprintf("%v // %v", index+1, element.Name))
-				fmt.Println(fmt.Sprintf("%v // %v", index+1, element.Name) + utils.Format("%v ₽", "right", 50-length, []string{strconv.Itoa(element.Price)}))
+				fmt.Println(fmt.Sprintf("%v // %v", index+1, element.Name) + utils.Format("%v ₽", "right", 50-length, []string{strconv.Itoa(element.Price.Currency)}))
 
 				position++
 			}
@@ -81,19 +82,19 @@ func (shop *ShopKeeper) SelectShopItem(item *Item, max int) {
 	var count int = 1
 	// If more than 1 item in shop, asks for amount needed:
 	if max > 1 {
-		utils.NPCLines(fmt.Sprintf(`"%v ? I have %v of them, %v ₽ each."`, item.Name, max, item.Price), "magenta+b", 20)
-		utils.NPCLines(`How many do you need ?"`+"\n", "magenta+b", 20)
+		utils.NPCLines(fmt.Sprintf(`"%v ? I have %v of them, %v ₽ each."`, item.Name, max, item.Price.Currency), "magenta+b", 20)
+		utils.NPCLines(` do you need ?"`+"\n", "magenta+b", 20)
 		fmt.Println(utils.Format("Money: %v ₽", "right", 50, []string{strconv.Itoa(P1.Inventory.Money)}))
 		count = GetInputInt(max, []int{}, "")
 	}
 
 	// Dialogue for more than 1 item:
 	if count > 1 {
-		utils.NPCLines(fmt.Sprintf("So it'll be %v ₽ for those %v %vs, please.\n", (item.Price*count), count, item.Name), "magenta+b", 20)
+		utils.NPCLines(fmt.Sprintf("So it'll be %v ₽ for those %v %vs, please.\n", (item.Price.Currency*count), count, item.Name), "magenta+b", 20)
 
 		// Dialogue for 1 item:
 	} else {
-		utils.NPCLines(fmt.Sprintf("This %v will cost you %v ₽, please.\n", item.Name, item.Price), "magenta+b", 20)
+		utils.NPCLines(fmt.Sprintf("This %v will cost you %v ₽, please.\n", item.Name, item.Price.Currency), "magenta+b", 20)
 	}
 
 	// Prints money, user choices and asks for input:
@@ -113,7 +114,7 @@ func (shop *ShopKeeper) SelectShopItem(item *Item, max int) {
 func (shop *ShopKeeper) BuyItem(item *Item, count int) {
 
 	// Check if the P1 has enough money to buy:
-	if (item.Price * count) > P1.Inventory.Money {
+	if (item.Price.Currency * count) > P1.Inventory.Money {
 		utils.NPCLines(`"Hey, don't buy if you can't pay !`+"\n", "magenta+b", 20)
 
 		// Checks if the P1 has enough room in the bag to buy:
@@ -123,11 +124,12 @@ func (shop *ShopKeeper) BuyItem(item *Item, count int) {
 		// Buys the item:
 	} else {
 		// Removes item price from player money:
-		P1.Inventory.Money -= item.Price * count
+		P1.Inventory.Money -= item.Price.Currency * count
 		// Adds the item to player's inventory and removes it from shopkeeper's inventory:
 		P1.Inventory.AddToInventory(item, count)
 		shop.Inventory.RemoveFromInventory(item, count)
-		fmt.Printf("------ BOUGHT %v %v FROM %v ------\n\n", count, strings.ToUpper(item.Name), strings.ToUpper(shop.Name))
+		utils.UPrint((ansi.Color((utils.Format("๑๑๑ BOUGHT: %v %v(s) ๑๑๑\n", "center", 50, []string{strconv.Itoa(count), strings.ToUpper(item.Name)})), "blue+b")), 20)
+		fmt.Println()
 		utils.NPCLines(`It's always a pleasure doing business with you!"`+"\n", "magenta+b", 20)
 	}
 	time.Sleep(1500 * time.Millisecond)

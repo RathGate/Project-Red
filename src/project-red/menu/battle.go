@@ -26,10 +26,9 @@ func BattleIntroduction(player Character, enemy Enemy) {
 func PrintBattleInfo(player Character, enemy Enemy) {
 	e_name := utf8.RuneCountInString(fmt.Sprintf("%v", enemy.Name))
 	e_hp := utf8.RuneCountInString(fmt.Sprintf("HP: %v/%v", enemy.Stats.Curr_hp, enemy.Stats.Max_hp))
-	e_sp := utf8.RuneCountInString(fmt.Sprintf("SP: %v/%v", enemy.Stats.Curr_sp, enemy.Stats.Max_sp))
 	fmt.Println(ansi.Color(fmt.Sprintf("%v", strings.ToUpper(enemy.Name)), "red+b") + ansi.Color(utils.Format("%v", "right", 50-e_name, []string{strings.ToUpper(player.Name)}), "blue+b"))
 	fmt.Println(fmt.Sprintf("HP: %v/%v", enemy.Stats.Curr_hp, enemy.Stats.Max_hp) + utils.Format("HP: %v/%v", "right", 50-e_hp, []string{strconv.Itoa(player.Stats.Curr_hp), strconv.Itoa(player.Stats.Max_hp)}))
-	fmt.Println(fmt.Sprintf("SP: %v/%v", enemy.Stats.Curr_sp, enemy.Stats.Max_sp) + utils.Format("SP: %v/%v", "right", 50-e_sp, []string{strconv.Itoa(player.Stats.Curr_sp), strconv.Itoa(player.Stats.Max_sp)}))
+	fmt.Println(utils.Format("SP: %v/%v", "right", 50, []string{strconv.Itoa(player.Stats.Curr_sp), strconv.Itoa(player.Stats.Max_sp)}))
 
 	fmt.Println()
 }
@@ -42,16 +41,6 @@ func (inventory *Inventory) GetBattleItems() []*Item {
 		}
 	}
 	return list
-}
-
-func (player *Character) BattleReward(xp int, item *Item) {
-
-	// XP :::
-	player.Stats.Exp += xp
-	for player.Stats.Exp > player.Stats.Max_exp {
-		player.LevelUp()
-	}
-
 }
 
 func (player *Character) LevelUp() {
