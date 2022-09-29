@@ -6,9 +6,12 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"projectRed/utils"
 	"regexp"
+	"strings"
 	"time"
 
+	"github.com/mgutz/ansi"
 	"golang.org/x/exp/slices"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -16,7 +19,7 @@ import (
 
 // PUTS ALL KEYS OF A MAP INTO AN ARRAY
 // Used to dodge the random map keys problem in the inventories:
-func Sorted(inv *Inventory) []*Item {
+func MapKeysToArr(inv *Inventory) []*Item {
 	keys := make([]*Item, 0)
 	for k := range inv.Items {
 		keys = append(keys, k)
@@ -31,10 +34,15 @@ func DiscardBuffer(r *bufio.Reader) {
 
 // GET A VALID NUMERIC INPUT FROM USER (max: value if input must be between 0 & max)
 // (arr: if valid values are not a chain of numbers ([0, 2, 3] for exemple)
-func GetInputInt(max int, arr []int) int {
+func GetInputInt(max int, arr []int, environ string) int {
 	var answer int
 	stdin := bufio.NewReader(os.Stdin)
-	fmt.Println("\n0 // Quit")
+	if environ == "" {
+		utils.UPrint("\n0 // Back\n", 20)
+	}
+	if environ == "next" {
+		utils.UPrint("\n0 // Next\n", 20)
+	}
 	for {
 		fmt.Printf("   → ")
 		if _, err := fmt.Fscanln(stdin, &answer); err != nil {
@@ -71,23 +79,23 @@ func GetInputStr(inputType string) string {
 		if _, err := fmt.Fscanln(stdin, &answer); err != nil {
 			DiscardBuffer(stdin)
 			fmt.Println()
-			fmt.Print("I'm afraid my old ears will have you repeat it again...\n")
-			time.Sleep(1500 * time.Millisecond)
+			utils.UPrint(ansi.Color(`"I'm afraid my old ears will have you repeat it again..."`+"\n", "yellow"), 60)
+			time.Sleep(500 * time.Millisecond)
 			continue
 		}
-		if inputType == "name" && !regexp.MustCompile(`^([a-zA-Z0-9]{2,10})$`).MatchString(answer) {
+		if inputType == "name" && !regexp.MustCompile(`^([a-zA-Z]{2,10})$`).MatchString(answer) {
 			DiscardBuffer(stdin)
 			fmt.Println()
-			fmt.Println(`"I'm afraid my old ears will have you repeat it again..."`)
-			time.Sleep(1500 * time.Millisecond)
-			fmt.Println("[Not a valid name! (2-10 characters, alphanum only)]")
+			utils.UPrint(ansi.Color(`"I'm afraid my old ears will have you repeat it again..."`+"\n", "yellow"), 60)
+			time.Sleep(500 * time.Millisecond)
+			fmt.Println("[Not a valid name! (2-10 characters, letters only)]")
 			continue
 		}
-		if inputType == "class" && !slices.Contains([]string{"Human", "Elf", "Dwarf"}, answer) {
+		if inputType == "class" && !slices.Contains([]string{"human", "elf", "dwarf"}, strings.ToLower(answer)) {
 			fmt.Println()
 			DiscardBuffer(stdin)
-			fmt.Println(`"I'm afraid my old ears will have you repeat it again..."`)
-			time.Sleep(1500 * time.Millisecond)
+			utils.UPrint(ansi.Color(`"I'm afraid my old ears will have you repeat it again..."`+"\n", "yellow"), 60)
+			time.Sleep(500 * time.Millisecond)
 			fmt.Print("[Not a valid class! ('Human' / 'Elf' / 'Dwarf')]\n")
 			continue
 		}
@@ -99,37 +107,54 @@ func GetInputStr(inputType string) string {
 
 // FONCTION DE TEST (pour print infos et inventaires)
 func PrintInfo(char *Character) {
-	fmt.Print("------ INIT RESULTS ------\n\n")
-	fmt.Printf("NAME: %v\n", char.Name)
-	fmt.Printf("CLASS: %v\n", char.Class)
-	fmt.Printf("HP: %v/%v\n", char.Curr_hp, char.Max_hp)
-	fmt.Printf("MONEY: %v₽\n", char.Inventory.Money)
-	fmt.Printf("INVENTORY:\n")
-	if len(char.Inventory.Items) == 0 {
-		fmt.Println("    --- EMPTY ---")
-	} else {
-		for item, count := range char.Inventory.Items {
-			fmt.Printf("    → %v (x%v)\n", item.Name, count)
-		}
-	}
+	utils.PrintBox(P1.Name, "C H A R A C T E R  I N F O", "Cyan")
+
+	fmt.Println(ansi.Color("NAME: ", "cyan+B") + char.Name)
+	fmt.Println(ansi.Color("CLASS: ", "cyan+B") + char.Class)
+	fmt.Printf(ansi.Color("MONEY: ", "cyan+B")+"%v ₽\n", char.Inventory.Money)
+
+	fmt.Println(ansi.Color("STATS: ", "cyan+B"))
+	fmt.Printf("    → Level: %v\n", char.Stats.Level)
+	fmt.Printf("    → HP: %v/%v\n", char.Stats.Curr_hp, char.Stats.Max_hp)
+	fmt.Printf("    → SP: %v/%v\n", char.Stats.Curr_sp, char.Stats.Max_sp)
+	fmt.Printf("    → ATK: %v\n", char.Stats.Atk)
+
 	fmt.Println()
-	fmt.Printf("SKILLS:\n")
+	fmt.Println(ansi.Color("SKILLS: ", "cyan+B"))
 	if len(char.Skills) == 0 {
-		fmt.Println("    --- EMPTY ---")
+		utils.UPrint(fmt.Sprintln(utils.Format("●●●● E M P T Y ●●●●", "center", 50, []string{})), 20)
 	} else {
-		for _, item := range char.Skills {
-			fmt.Printf("    → %v\n", item.Name)
+		for _, skill := range char.Skills {
+			fmt.Printf("    → %v\n", skill.Name)
 		}
 	}
 	fmt.Println()
+
+	fmt.Println(ansi.Color("EQUIPMENT: ", "cyan+B"))
+	for i, value := range EquipmentToArr() {
+		fmt.Printf("    → %v: %v\n", Equip_Opt[i], value.Name)
+	}
+
+	_ = GetInputInt(0, []int{}, "")
 }
 
 // USED TO FIND AN ITEM IN AN INVENTORY BASED ON ITS NAME:
-func RetrieveItemByName(name string, inventory Inventory) *Item {
+func RetrieveItemByName(name string, inventory Inventory) (*Item, bool) {
 	for item := range inventory.Items {
 		if name == item.Name {
-			return item
+			return item, true
 		}
 	}
-	return &Item{Name: "0emp0"}
+	return &Item{}, false
+}
+
+// USED TO FIND A SKILL IN AN INVENTORY BASED ON ITS NAME:
+func RetrieveSkillByName(name string, player *Character) (Skill, bool) {
+	var s Skill
+	for _, skill := range player.Skills {
+		if name == skill.Name {
+			return skill, true
+		}
+	}
+	return s, false
 }

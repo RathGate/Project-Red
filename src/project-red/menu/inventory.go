@@ -5,9 +5,9 @@ import (
 )
 
 type Inventory struct {
-	Items     map[*Item]int
-	Equipment []string
-	Money     int
+	Items    map[*Item]int
+	Money    int
+	Capacity int
 }
 
 // ADDS [count] [item] TO THE INVENTORY
@@ -31,8 +31,8 @@ func (inventory *Inventory) AddToInventory(item *Item, count int) {
 	inventory.Items[item] = count
 }
 
-func (inv *Inventory) RemoveFromInventory(item *Item, count int) {
-	item = RetrieveItemByName(item.Name, *inv)
+func (inv *Inventory) RemoveFromInventory(item *Item, count int) bool {
+	item, _ = RetrieveItemByName(item.Name, *inv)
 
 	// Deletes [count] of [item] from the inventory.
 	inv.Items[item] -= count
@@ -40,8 +40,9 @@ func (inv *Inventory) RemoveFromInventory(item *Item, count int) {
 	// If 0 or less items in the inventory, deletes the full item:
 	if inv.Items[item] <= 0 {
 		delete(inv.Items, item)
-		return
+		return true
 	}
+	return false
 }
 
 // CHECKS IF INVENTORY IS FULL:
@@ -53,4 +54,8 @@ func (inventory Inventory) IsFull() (bool, int) {
 		count += number
 	}
 	return (count >= 10), count
+}
+
+func (inventory *Inventory) UpgradeInventorySlot() {
+	inventory.Capacity += 10
 }
