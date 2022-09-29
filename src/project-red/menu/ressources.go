@@ -9,7 +9,7 @@ var Potion = Item{
 	Category:    "item",
 	Type:        "heal",
 	BattleUse:   true,
-	Effect:      map[string]interface{}{"damage": 3},
+	Effect:      map[string]interface{}{"damage": 0.33},
 	Price:       50,
 }
 var PoisonPotion = Item{

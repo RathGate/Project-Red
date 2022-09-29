@@ -56,10 +56,9 @@ func (shop *ShopKeeper) BuyMenu() {
 
 			// Prints each item to sell and asks for an input:
 			for index, element := range keys {
-				e_name := utf8.RuneCountInString(fmt.Sprintf("%v // %v", index+1, element))
-				fmt.Println(fmt.Sprintf("%v // %v", index+1, element)) + utils.Format("%v", "right", 50-e_name, []string{strings.ToUpper(player.Name)}))
+				length := utf8.RuneCountInString(fmt.Sprintf("%v // %v", index+1, element.Name))
+				fmt.Println(fmt.Sprintf("%v // %v", index+1, element.Name) + utils.Format("%v ₽", "right", 50-length, []string{strconv.Itoa(element.Price)}))
 
-				fmt.Printf("%v // %v %v %v ₽\n", index+1, element.Name, strings.Repeat(" ", 25-len(element.Name)), element.Price)
 				position++
 			}
 

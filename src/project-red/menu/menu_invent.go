@@ -61,7 +61,7 @@ func (item *Item) ItemMenu(count int, inventory *Inventory, environ string) {
 
 		switch answer {
 		case 1:
-			if inventory.UseItem(item, &P1, "battle") {
+			if inventory.UseItem(item, &Enemy{}, "battle") {
 				return
 			}
 		case 2:

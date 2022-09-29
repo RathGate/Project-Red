@@ -2,6 +2,7 @@ package menu
 
 import (
 	"fmt"
+	"projectRed/utils"
 	"time"
 )
 
@@ -15,7 +16,7 @@ type Item struct {
 	Effect      map[string]interface{}
 }
 
-func (inventory *Inventory) UseItem(item *Item, target *Character, environ string) bool {
+func (inventory *Inventory) UseItem(item *Item, target *Enemy, environ string) bool {
 
 	switch item.Type {
 
@@ -28,17 +29,22 @@ func (inventory *Inventory) UseItem(item *Item, target *Character, environ strin
 		}
 		// Else: Take the item
 		if environ == "battle" {
-			DelayedAction = map[string]interface{}{"action": "item", "item": item, "target": target}
+			DelayedAction = map[string]interface{}{"type": "item", "item": item}
 			TurnEnded = true
 			return true
 		}
-		fmt.Printf("Previous HP: %v/%v | ", P1.Stats.Curr_hp, P1.Stats.Max_hp)
-		if P1.Stats.Curr_hp+item.Effect["damage"].(int) > P1.Stats.Max_hp {
+		prev := P1.Stats.Curr_hp
+		if P1.Stats.Curr_hp+int((item.Effect["damage"].(float64))*float64(P1.Stats.Max_hp)) > P1.Stats.Max_hp {
 			P1.Stats.Curr_hp = P1.Stats.Max_hp
 		} else {
-			P1.Stats.Curr_hp += item.Effect["damage"].(int)
+			P1.Stats.Curr_hp += int((item.Effect["damage"].(float64)) * float64(P1.Stats.Max_hp))
 		}
-		fmt.Printf("Current HP: %v/%v\n", P1.Stats.Curr_hp, P1.Stats.Max_hp)
+		if environ == "delayed" {
+			utils.UPrint(fmt.Sprintf("%v restores %vHP of %v !\n", item.Name, int((item.Effect["damage"].(float64))*float64(P1.Stats.Max_hp)), P1.Name), 20)
+			return true
+		} else {
+			fmt.Printf("Previous HP: %v/%v\nCurrent HP: %v/%v\n", prev, P1.Stats.Max_hp, P1.Stats.Curr_hp, P1.Stats.Max_hp)
+		}
 
 	case "spell":
 		switch item.Effect["type"] {
@@ -53,11 +59,12 @@ func (inventory *Inventory) UseItem(item *Item, target *Character, environ strin
 	case "book":
 
 		if item.Effect["type"].(string) == "skill" {
-			if _, learned := RetrieveSkillByName(item.Effect["learn"].(Skill).Name, target); learned {
-				fmt.Println("You already know that skill...")
+			if _, learned := RetrieveSkillByName(item.Effect["learn"].(Skill).Name, &P1); learned {
+				fmt.Printf("You already know that skill...\n\n")
 				return false
 			} else {
-				target.Skills = append(target.Skills, (item.Effect["learn"].(Skill)))
+				fmt.Printf("You learned to use %v !\n", item.Effect["learn"].(Skill).Name)
+				P1.Skills = append(P1.Skills, (item.Effect["learn"].(Skill)))
 			}
 
 		} else if item.Effect["type"].(string) == "expand" {
