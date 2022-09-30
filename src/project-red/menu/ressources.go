@@ -31,7 +31,7 @@ var ShopDude = ShopKeeper{
 
 var Potion = Item{
 	Name:        "Potion",
-	Description: `"A magic item that eases pain and heals wounds in the blink\nof an eye... Restores 30HP to its user."`,
+	Description: `"A magic item that eases pain and heals wounds in the blink` + "\n" + `of an eye... Restores 30HP to its user."`,
 	Category:    "item",
 	Type:        "heal",
 	BattleUse:   true,
@@ -51,7 +51,7 @@ var FairyBottle = Item{
 
 var PoisonPotion = Item{
 	Name:        "Poison Potion",
-	Description: `"Uhh... This one seems a little bit doubtful... Are you sure\nyou wanna try it out ?"`,
+	Description: `"Uhh... This one seems a little bit doubtful... Are you sure` + "\n" + `you wanna try it out ?"`,
 	Category:    "item",
 	Type:        "poison",
 	BattleUse:   true,
@@ -62,7 +62,7 @@ var PoisonPotion = Item{
 }
 var TrucExtraCheros = Item{
 	Name:        "Truc Super Chéros",
-	Description: `"I don't know what it is, but one thing is sure:\nit's expensive."`,
+	Description: `"I don't know what it is, but one thing is sure:` + "\n" + `it's expensive."`,
 	Price: Price{
 		Currency: 120,
 	},
@@ -73,7 +73,7 @@ var TrucExtraCheros = Item{
 
 var FireBook = Item{
 	Name:        "SpellBook - Fireball",
-	Description: `"You can learn a lot of things reading books...\nThis one will teach you the skill Iceball."`,
+	Description: `"You can learn a lot of things reading books...` + "\n" + `This one will teach you the skill Iceball."`,
 	Category:    "item",
 	Type:        "book",
 	Price: Price{
@@ -85,7 +85,7 @@ var FireBook = Item{
 
 var OrganiserGuide = Item{
 	Name:        "Organiser Guide",
-	Description: `"You can learn a lot of things reading books...\nThis one will teach how to organise your bag.\nMax inventory space: +10."`,
+	Description: `"You can learn a lot of things by reading books...` + "\n" + `This one will teach how to organise your bag."` + "\nMax inventory space: +10.",
 	Category:    "item",
 	Type:        "book",
 	BattleUse:   false,
