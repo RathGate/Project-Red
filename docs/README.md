@@ -4,7 +4,9 @@
 ____
 
 ## A propos
-Ce projet a été réalisé dans le cadre de **Ymmersion** à Ynov Aix par **Marianne Corbel** et **Eva Chibane**, respectant un cahier des charges spécifique.
+Ce projet a été réalisé dans le cadre de **Ymmersion** à Ynov Aix par **Marianne Corbel** et **Eva Chibane**, respectant un cahier des charges spécifique. Vous pourrez trouver le planning des tâches dans `docs/plannification.md` !
+
+Cette documentation n'a pas pu être terminée dans les temps, mais puisque le projet nous tient à coeur, elle sera mise à jour sous peu !! 
 
 ___
 
